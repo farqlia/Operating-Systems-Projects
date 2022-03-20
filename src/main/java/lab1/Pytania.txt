@@ -1,0 +1,117 @@
+1. Czy w SJF jeśli procesy mają ten sam czas wykonania, to
+czy porównywać je jeszcze pod względem czasu przybycia?
+2. Czy kolekcja ma znaczenie?
+3. Czy trzeba jakieś wątki wprowadzać
+4. Czy trzeba jakieś własne dane przygotować (w sensie bez generatora)
+5. Czy przełączanie kontekstu jest stałe w czasie // taak
+6. Czy czas kontekst switch jest liczony w tym algorytmie RR !!!
+7. Czy czas na posortowanie danych trzeba wliczać
+8. Czy kwant czasu jest stały w czasie algorytmu w RR
+
+// ZEBY POJAWIŁY SIĘ WIĘCEJ NIŻ 1 proces na raz
+// umożliwić uruchomienie jednego / trzech na raz
+
+stworzyć klasę, która generuje listę procesów i można parametryzować
+1. parametryzować jak długi ma być
+2. jakie są odstępy między procesami
+3. i że parę procesów jednocześnie się może zgłosić // czyli może natężenie jakoś??
+4. liczba procesów też musi
+
+zliczyć całkowity czas : różne wyniki dla różnych algorytmów
+musi upłynąć ten sam czas - posumowany czas musi być ten sam czas
+
+czas sortowania - sortowanie będzie, czy adekwatnie duży czy nie
+tyle razy sortowałem miara: tyle było sortować, a co by było jeśli
+by to trwało
+czyli nie długość przełączenia, nie sumujemy tego, tylko ilość przełączeń
+bo chodzi o pokazanie słabości algorytmów
+
+czeka ileś tych procesów, a co ileś jest dodawane
+symulacja jakaś skrajna
+FCFS będzie lepszy, ale średni czas oczekiwania nie powinien być mniejszy niż SJF
+
+nie iść w dodawanie czasu
+
+min + (difference) * next number from number generator
+
+nie wystarczy skopiowanie listy, trzeba też skopiować elementy listy
+czy da się szybciej niż złożoność O(n) kopiować listę (deep copy)
+można Cloneable
+odwoływanie się do this nawet gdy to nie jest potrzebne
+apache commons - operacje na listach
+nie da sie iterować iteratorem (petla foreach) po liście i ją zmieniać
+da sie zwykłym for'em
+for (int i = 0; i < list.size; i++) list.remove(i)
+to chyba co drugi element usuwamy
+for (; list.size(); )  ok jest ta pętla
+
+maksymalny czas oczekiwania/ minimalny
+
+generowanie dynamiczne
+
+while (true) {
+    bo ktoś tego musi szukać i to jest zły nawyk !
+    if condition then break;
+
+}
+
+no to tak ma być
+widać wtedy kiedy to ma się skończyć
+while (condition) {
+
+}
+
+wyrabiać sobie nawyk taki, by każdy element wstawiać do osobnej metody
+list.isEmpty and i < totalNum or condition
+
+tak jest lepiej i bardziej czytelne
+boolean checkCondition() {return list.isEmpty and i < totalNum or condition}
+
+i lepiej jeszcze czytelne, jak po tym będą metody
+
+boolean return checkCondition(){
+    return checkCondition1() || checkCondtion2();
+}
+
+w takie łańcuchy dobrze jest ubierać
+i żeby takie nazwy sensownie dawać np. isSomething i odrazu
+wiadomo co robi dany kawałek logiki
+sredni czas oczekiwania w SJF jest wiekszy niż w FCFS
+
+x = 0.05
+
+while (condition) {
+    if (isCompleted()){
+        remove(p)
+    }
+    że w tym momencie się dzieje: ale no nie zawsze oczywiście,
+    najprościej jakiś if i zmienna losowa (random.nextInt())
+
+    można sterować tą zmienną i że system jest mało obciążony/dużo
+
+    if (rnd < 0.25) {
+        list.add(generateNewProcess)
+        x = 0.05
+    } else {
+        x += 0.1
+    }
+
+    3/4 procesy, długi odstęp czasu, a potem znowu 3/4 ale to cięzko
+    można sobie z palca przetestować
+
+    i++ że upływ czasu
+}
+
+Scanner sc = new Scanner(System.in)
+String s = sc.nextLine
+s.toUpperCase.trim
+if (s.equals("FCFS")){
+    to odpalam ten algorytm
+}
+lepiej "FCFS".equals(s) -> to jest null safe
+mamy wzorzec i do tego chcemy porównać coś, mniej kontuzjogenne
+matematczny/statystyczny sposób
+coś tam wariancja
+dane w każdej próbce, czy istnieje statystyczna różnica w porównaniu do
+innych / Komogorowa, nie ma statystycznie istotnej różnicy, można dużą próbkę, i uśredniając wyniki z 50 symulacji/odpaleń z tymi samymi parametrami
+Te same dane w każdym algorytmie, ale w ogólności jeśli byśmy to odpalali dużą liczbę razy, to nic by się nie zmieniło
