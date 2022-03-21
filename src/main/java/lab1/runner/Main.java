@@ -1,8 +1,6 @@
 package lab1.runner;
 
-import lab1.processesgenerator.CauchyGenerator;
 import lab1.processesgenerator.Generator;
-import lab1.processesgenerator.ProcessesGenerator2;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -15,6 +13,9 @@ public class Main {
 
         boolean isDone = false;
         Generator generator;
+
+        AbstractSimulation simulation = null;
+
         while (!isDone){
             System.out.println("Choose algorithm: 1.FCFS\n2.SJF\n3.RR\n4.All\n5.exit(e)");
             String input = scanner.nextLine();
@@ -30,8 +31,6 @@ public class Main {
                 System.out.println("Choose Parameters : (t/f)");
                 String des = scanner.nextLine();
 
-                Simulation simulation;
-
                 if ('t' == des.toLowerCase(Locale.ROOT).charAt(0)) {
 
                     System.out.println("Choose quanta time : ");
@@ -43,16 +42,31 @@ public class Main {
                     System.out.println("Choose max time difference: ");
                     int diff = Integer.parseInt(scanner.nextLine());
 
-                    System.out.println("Choose probability : ");
+                    System.out.println("Choose threshold : ");
                     double prob = Double.parseDouble(scanner.nextLine());
 
                     System.out.println("Choose intensity : ");
                     int inten = Integer.parseInt(scanner.nextLine());
 
-                    simulation = new Simulation(iterations, showStatistics, quanta, minDur, inten, diff, prob);
+                    System.out.println("Choose other parameters : (t/f)");
+                    des = scanner.nextLine();
 
-                } else {
-                    simulation = new Simulation(iterations, showStatistics);
+                    if ('t' == des.toLowerCase(Locale.ROOT).charAt(0)){
+                        System.out.println("Choose phase : ");
+                        double phase = Double.parseDouble(scanner.nextLine());
+
+                        System.out.println("Choose phase length: ");
+                        double phaselength = Double.parseDouble(scanner.nextLine());
+
+                        System.out.println("Choose multiplicant: ");
+                        int multiplicant = Integer.parseInt(scanner.nextLine());
+
+                        simulation = new Simulation2(iterations, showStatistics, quanta, minDur, inten, diff, prob,
+                                phase, phaselength, 0.1, multiplicant);
+
+                    } else {
+                        simulation = new Simulation(iterations, showStatistics, quanta, minDur, inten, diff, prob, 0.1);
+                    }
                 }
 
                 input = input.toLowerCase(Locale.ROOT).trim();

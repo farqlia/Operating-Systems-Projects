@@ -1,9 +1,6 @@
 package lab1.visualization;
 
-import lab1.processesgenerator.CauchyGenerator;
-import lab1.processesgenerator.ChiSquatred;
-import lab1.processesgenerator.Generator;
-import lab1.processesgenerator.ProcessesGenerator2;
+import lab1.processesgenerator.*;
 import lab1.processing.Process_;
 import lab1.schedulers.Scheduler;
 import lab1.schedulers.TrapScheduler;
@@ -45,12 +42,13 @@ public class Main {
          */
 
         Scheduler s = new TrapScheduler();
-        Generator g = new ProcessesGenerator2(40, 10, 2, 0.3, 100, s);
-        int itr = 100;
+        int itr = 300;
+        //Generator g = new ProcessesGenerator2(40, 10, 2, 0.3, 100, s);
+        Generator g = new SJFKillGenerator(20, 50, 1, 0.3, itr,0.5, 0, 0.1, 5 , s);
         while (g.totalGenerated() < itr) g.next();
 
         SwingUtilities.invokeLater(() ->
-              new VisualizeProcesses(s, 100));
+              new VisualizeProcesses(s, itr));
 
         /*
         Process_ p;
