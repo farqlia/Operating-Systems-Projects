@@ -19,25 +19,25 @@ public class Generator {
     int intensity;
     int numOfProcesses;
 
-    // Value between 0 - 1 : tells when the big processes have to enter
-    // Can be zero, then this will be a normal generator
+    // Value between 0 - 1 : tells when longer processes have to enter
+    // If it is 0, then this will be a normal generator
     private final double phase;
-    // How many big processes
+    // How many longer processes
     private final double phaseLength;
     private final int multiplicant;
 
     private final int NUM_OF_PROCESSES;
 
-    RandomGenerator ACCESS_GENERATOR = new Well19937c(1);
-    RandomGenerator NUM_GENERATOR = new Well19937c(2);
-    RandomGenerator INTENSITY_GENERATOR = new Well19937c(3);
+    private final RandomGenerator ACCESS_GENERATOR = new Well19937c(1);
+    private final RandomGenerator NUM_GENERATOR = new Well19937c(2);
+    private final RandomGenerator INTENSITY_GENERATOR = new Well19937c(3);
 
-    ChiSquaredDistribution chiSqrtDis;
+    private final ChiSquaredDistribution chiSqrtDis;
 
-    Scheduler[] schedulers;
+    private final Scheduler[] schedulers;
 
     int counter;
-
+    // Time completion of all the current processes
     int timeToComplete;
 
     // phase is number between 0 - 8
@@ -47,7 +47,7 @@ public class Generator {
         this.difference = difference;
         this.intensity = intensity;
         this.numOfProcesses = numOfProcesses;
-        this.access = 1;
+        this.access = 10;
         this.phase = phase;
         this.phaseLength = phaseLength;
         this.multiplicant = multiplicant;
@@ -77,8 +77,8 @@ public class Generator {
 
     public void next() {
 
-        // ???
-        if (ACCESS_GENERATOR.nextFloat() + access > (double)(timeToComplete /(Time.get() + 1)) || (Time.get() - timeToComplete < 10)){
+        if (ACCESS_GENERATOR.nextFloat() + access - .02 * intensity > (double)((timeToComplete) / (Time.get() + 1))
+                || (Time.get() - timeToComplete == 1)){
 
             int howMany = 1 + (int)((intensity - 1) * chiSqrtDis.cumulativeProbability(9 * INTENSITY_GENERATOR.nextFloat()));
 
@@ -98,7 +98,7 @@ public class Generator {
             }
             access = -chance;
         } else {
-            access += Math.abs(chance);
+            access += chance;
         }
 
     }
@@ -110,7 +110,6 @@ public class Generator {
     }
 
     private int getPhase(){
-
         int val = (int) (phase * NUM_OF_PROCESSES);
         if (phase != 0 && totalGenerated() >= val && totalGenerated() <= val + (phaseLength * NUM_OF_PROCESSES)){
             return minDuration + (int) Math.abs(multiplicant * difference * NUM_GENERATOR.nextGaussian());
