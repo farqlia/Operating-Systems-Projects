@@ -1,12 +1,13 @@
-package lab1.schedulers;
+package lab1.visualization;
 
 import lab1.processing.Process_;
+import lab1.schedulers.Scheduler;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TrapScheduler implements Scheduler{
+public class TrapScheduler implements Scheduler {
 
     List<Process_> p = new LinkedList<>();
 

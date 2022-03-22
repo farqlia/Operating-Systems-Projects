@@ -35,8 +35,4 @@ public class FCFS implements Scheduler{
         return processQueue.isEmpty();
     }
 
-    public int getMaxStarvingTime() {
-        return 0;
-    }
-
 }

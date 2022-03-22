@@ -2,11 +2,9 @@ package lab1.statistics;
 
 import lab1.processing.Process_;
 import lab1.processing.Processor;
-import lab1.schedulers.Scheduler;
 import lab1.schedulers.Time;
 
 import java.util.ArrayList;
-import java.util.zip.DeflaterOutputStream;
 
 public class Statistics {
 
@@ -14,8 +12,7 @@ public class Statistics {
     private final String algName;
     private final int METRIC = 100;
     // Turnaround time is the time between the
-    // arrival of the process and it's completion
-    // Change it to mapping
+    // arrival of the process and its completion
     private final ArrayList<Double> turnArndTimes;
     // Response time is the difference between the arrival time and first time
     // the process was visited
@@ -28,9 +25,6 @@ public class Statistics {
     double averageRespnTime;
     double averageWaitngTime ;
 
-    public String getAlgName() {
-        return algName;
-    }
 
     public Statistics(Processor processor, String algName){
         this.processor = processor;
@@ -43,16 +37,13 @@ public class Statistics {
     public void analyze(){
 
         Process_ process = processor.getCurrProcess();
-        if (process != null) {
-            if (process.getCompTime() == (process.getLeftTime() + 1)){
-                respTimes.add((double)((Time.get() - 1) - process.getArrTime()) / METRIC);
-            }
-
-            if (process.isTerminated()){
-                double turnArndT = (double) (Time.get() - process.getArrTime()) / METRIC;
-                turnArndTimes.add(turnArndT);
-                waitingTimes.add(turnArndT - ((double) process.getCompTime() / METRIC));
-            }
+        if (process.getCompTime() == (process.getLeftTime() + 1)){
+            respTimes.add((double)((Time.get() - 1) - process.getArrTime()) / METRIC);
+        }
+        if (process.isTerminated()){
+            double turnArndT = (double) (Time.get() - process.getArrTime()) / METRIC;
+            turnArndTimes.add(turnArndT);
+            waitingTimes.add(turnArndT - ((double) process.getCompTime() / METRIC));
         }
 
     }

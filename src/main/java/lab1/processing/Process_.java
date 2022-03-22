@@ -12,9 +12,6 @@ public interface Process_ {
 
     boolean isTerminated();
 
-    // What part of the job has been done during 1 unit time
-    // (useful when we consider context switching)
-    // Value is between (0, 1>
-    void doJob(double part);
+    void doJob();
 
 }

@@ -2,9 +2,9 @@ package lab1.processing;
 
 public class SimpleProcess implements Process_ {
 
-    private int id;
-    private int arrTime;
-    private int compTime;
+    private final int id;
+    private final int arrTime;
+    private final int compTime;
     private int leftTime;
 
     public SimpleProcess(int id, int arrTime, int completionTime) {
@@ -21,8 +21,8 @@ public class SimpleProcess implements Process_ {
         this.leftTime = other.leftTime;
     }
 
-    public void doJob(double part){
-        leftTime-= part;
+    public void doJob(){
+        leftTime-= 1;
     }
 
     public boolean isTerminated() {return leftTime <= 0;}

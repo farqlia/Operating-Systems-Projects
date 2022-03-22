@@ -1,8 +1,6 @@
 package lab1.visualization;
 
-import lab1.processesgenerator.Generator;
 import lab1.processing.Process_;
-import lab1.processing.SimpleProcess;
 import lab1.schedulers.Scheduler;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -11,7 +9,6 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
-import java.util.List;
 
 public class VisualizeProcesses extends JFrame {
 

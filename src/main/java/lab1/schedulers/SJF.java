@@ -11,8 +11,6 @@ public class SJF implements Scheduler{
             Integer::compareTo).thenComparing(Process_::getId, Integer::compareTo);
     TreeSet<Process_> processes = new TreeSet<>(comp);
     Process_ process;
-    int longstWaitingTime;
-
     @Override
     public void addProcess(Process_ process) {
         processes.add(process);
@@ -21,8 +19,8 @@ public class SJF implements Scheduler{
 
     @Override
     public Process_ nextProcess() {
-        // Non-preemptive SJF, so we wait for the process to finish
 
+        // Non-preemptive SJF, so we wait for the process to finish
         if (process == null){
             process = processes.pollFirst();
         }
@@ -38,19 +36,6 @@ public class SJF implements Scheduler{
     @Override
     public boolean isDone() {
         return processes.isEmpty();
-    }
-
-    public int getMaxStarvingTime() {
-        return longstWaitingTime;
-    }
-
-    public void calcLongestStarvationTime(){
-        // last() returns the 'greatest' element according to comparator
-        if (!processes.isEmpty()){
-            int time = (Time.get() - processes.last().getArrTime());
-            if (time > longstWaitingTime) longstWaitingTime = time;
-        }
-
     }
 
 }

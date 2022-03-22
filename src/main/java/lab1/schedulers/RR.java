@@ -47,7 +47,6 @@ public class RR implements Scheduler {
             processes.offer(process);
             // Retrieve next process
             process = processes.pollFirst();
-            calcLongestStarvationTime();
             interval = quanta;
         }
         interval--;
@@ -60,16 +59,4 @@ public class RR implements Scheduler {
         return processes.isEmpty();
     }
 
-    public int getMaxStarvingTime() {
-        return longstWaitingTime;
-    }
-
-    public void calcLongestStarvationTime(){
-        // last() returns the 'greatest' element according to comparator
-        if (!processes.isEmpty()){
-            int time = (Time.get() - processes.peekFirst().getArrTime());
-            if (time > longstWaitingTime) longstWaitingTime = time;
-        }
-
-    }
 }

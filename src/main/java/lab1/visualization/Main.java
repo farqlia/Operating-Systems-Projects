@@ -1,17 +1,15 @@
 package lab1.visualization;
 
 import lab1.processesgenerator.*;
-import lab1.processing.Process_;
 import lab1.schedulers.Scheduler;
-import lab1.schedulers.TrapScheduler;
 
 import javax.swing.*;
 
 public class Main {
-
+ /*
     public static void main(String[] args) {
 
-        /*
+
 
         SwingUtilities.invokeLater(() ->
                 new VisualizeProcesses(new CauchyGenerator(0, 0.5), 100));
@@ -39,28 +37,26 @@ public class Main {
 
                 SwingUtilities.invokeLater(() ->
                 new VisualizeProcesses(new ChiSquatred(4), 200));
-         */
+
 
         Scheduler s = new TrapScheduler();
         int itr = 300;
         //Generator g = new ProcessesGenerator2(40, 10, 2, 0.3, 100, s);
         //Generator g = new SJFKillGenerator(20, 50, 1, 0.3, itr,0.5, 0, 0.1, 5 , s);
-        Generator g = new ProcessesGenerator(5, 20, 1, itr, s);
+        Generator g = new Generator(5, 20, 1, itr, s);
         while (g.totalGenerated() < itr) g.next();
 
         SwingUtilities.invokeLater(() ->
               new VisualizeProcesses(s, itr));
 
-        /*
+
         Process_ p;
         while ((p = s.nextProcess()) != null) {
             System.out.println(p.getCompTime());
         }
+}
+*/
 
 
-         */
-
-
-    }
 
 }
