@@ -44,7 +44,8 @@ public class Main {
         Scheduler s = new TrapScheduler();
         int itr = 300;
         //Generator g = new ProcessesGenerator2(40, 10, 2, 0.3, 100, s);
-        Generator g = new SJFKillGenerator(20, 50, 1, 0.3, itr,0.5, 0, 0.1, 5 , s);
+        //Generator g = new SJFKillGenerator(20, 50, 1, 0.3, itr,0.5, 0, 0.1, 5 , s);
+        Generator g = new ProcessesGenerator(5, 20, 1, itr, s);
         while (g.totalGenerated() < itr) g.next();
 
         SwingUtilities.invokeLater(() ->

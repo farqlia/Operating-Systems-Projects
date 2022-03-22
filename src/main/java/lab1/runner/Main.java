@@ -5,8 +5,9 @@ import lab1.processesgenerator.Generator;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class Main {
 
+public class Main {
+/*
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -25,8 +26,8 @@ public class Main {
             } else {
                 System.out.println("Show statistics: (t/f)");
                 boolean showStatistics = "t".equals(scanner.nextLine().toLowerCase(Locale.ROOT).trim());
-                System.out.println("Number of iterations");
-                int iterations = Integer.parseInt(scanner.nextLine());
+                System.out.println("Number of numOfProcesses");
+                int numOfProcesses = Integer.parseInt(scanner.nextLine());
 
                 System.out.println("Choose Parameters : (t/f)");
                 String des = scanner.nextLine();
@@ -61,11 +62,11 @@ public class Main {
                         System.out.println("Choose multiplicant: ");
                         int multiplicant = Integer.parseInt(scanner.nextLine());
 
-                        simulation = new Simulation2(iterations, showStatistics, quanta, minDur, inten, diff, prob,
+                        simulation = new Simulation2(numOfProcesses, showStatistics, quanta, minDur, inten, diff, prob,
                                 phase, phaselength, 0.1, multiplicant);
 
                     } else {
-                        simulation = new Simulation(iterations, showStatistics, quanta, minDur, inten, diff, prob, 0.1);
+                        simulation = new Simulation(numOfProcesses, showStatistics, quanta, minDur, inten, diff, prob, 0.1);
                     }
                 }
 
@@ -79,4 +80,6 @@ public class Main {
 
     }
 
+ */
 }
+

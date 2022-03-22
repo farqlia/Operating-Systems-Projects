@@ -20,32 +20,17 @@ public abstract class AbstractSimulation {
     Statistics statisticsSJF;
     Statistics statisticsRR;
 
-    // PUT HERE ALL VARIABLES THAT CAN BE PARAMETRIZED
-
     boolean showStatistics;
-    // Iterations is the number of clock ticks, but not the number of processes that will be generated
-    int iterations;
+
+    int numOfProcesses;
 
     int quantaTime;
-    int minDuration;
-    int intensity;
-    int maxDifference;
-    double threshold;
 
 
-    public AbstractSimulation(int iterations, boolean showStatistics, int quantaTime, int minDuration, int intensity, int maxDifference, double threshold) {
+    public AbstractSimulation(int numOfProcesses, boolean showStatistics, int quantaTime) {
         this.showStatistics = showStatistics;
-        this.iterations = iterations;
+        this.numOfProcesses = numOfProcesses;
         this.quantaTime = quantaTime;
-        this.minDuration = minDuration;
-        this.intensity = intensity;
-        this.maxDifference = maxDifference;
-        this.threshold = threshold;
-    }
-
-
-    public AbstractSimulation(int iterations, boolean showStatistics){
-        this(iterations, showStatistics, 1, 50, 1, 50, 0.5);
     }
 
     // Let the user choose some values to parametrize the simulation
@@ -80,19 +65,19 @@ public abstract class AbstractSimulation {
     private void createRR(){
         schedulerRR = new RR(quantaTime);
         processorRR = new Processor(schedulerRR, "RR");
-        statisticsRR = new Statistics(schedulerRR, processorRR, "RR");
+        statisticsRR = new Statistics(processorRR, "RR");
     }
 
     private void createFCFS(){
         schedulerFCFS = new FCFS();
         processorFCFS = new Processor(schedulerFCFS, "FCFS");
-        statisticsFCFS = new Statistics(schedulerFCFS, processorFCFS, "FCFS");
+        statisticsFCFS = new Statistics(processorFCFS, "FCFS");
     }
 
     private void createSJF(){
         schedulerSJF = new SJF();
         processorSJF = new Processor(schedulerSJF, "SJF");
-        statisticsSJF = new Statistics(schedulerSJF, processorSJF, "SJF");
+        statisticsSJF = new Statistics(processorSJF, "SJF");
     }
 
     protected abstract Generator getGenerator(Scheduler scheduler);
@@ -103,17 +88,15 @@ public abstract class AbstractSimulation {
 
         gen.next();
 
-        while (statistics.getNumOfTerminatedPrs() < iterations){
-
-            Time.increment();
+        while (statistics.getNumOfTerminatedPrs() < numOfProcesses){
 
             processor.process();
 
-            if (gen.totalGenerated() < iterations){
+            if (gen.totalGenerated() < numOfProcesses){
                 gen.next();
             }
 
-            //System.out.println("[CURRENT]: " + processor.getCurrProcess());
+            Time.increment();
 
             statistics.analyze();
             if (showStatistics) {

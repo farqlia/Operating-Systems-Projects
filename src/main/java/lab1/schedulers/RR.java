@@ -34,6 +34,7 @@ public class RR implements Scheduler {
 
         if (process == null){
             process = processes.pollFirst();
+            interval = quanta;
         }
 
         while (process != null && process.isTerminated()){

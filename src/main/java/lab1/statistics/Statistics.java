@@ -10,20 +10,19 @@ import java.util.zip.DeflaterOutputStream;
 
 public class Statistics {
 
-    private Scheduler scheduler;
-    private Processor processor;
-    private String algName;
-    private int METRIC = 100;
+    private final Processor processor;
+    private final String algName;
+    private final int METRIC = 100;
     // Turnaround time is the time between the
     // arrival of the process and it's completion
     // Change it to mapping
-    private ArrayList<Double> turnArndTimes;
+    private final ArrayList<Double> turnArndTimes;
     // Response time is the difference between the arrival time and first time
     // the process was visited
-    private ArrayList<Double> respTimes;
+    private final ArrayList<Double> respTimes;
 
     // Waiting time is time spent by the process waiting in the queue, when it is inactive
-    private ArrayList<Double> waitingTimes;
+    private final ArrayList<Double> waitingTimes;
 
     double averageComplTime;
     double averageRespnTime;
@@ -33,8 +32,7 @@ public class Statistics {
         return algName;
     }
 
-    public Statistics(Scheduler scheduler, Processor processor, String algName){
-        this.scheduler = scheduler;
+    public Statistics(Processor processor, String algName){
         this.processor = processor;
         this.algName = algName;
         turnArndTimes = new ArrayList<>();
@@ -110,7 +108,7 @@ public class Statistics {
 
         System.out.println("------ STATISTICS " + algName.toUpperCase() + "---------");
 
-        System.out.println("CURRENT = " + processor.getNumOfPrs());
+        System.out.println("CURRENT = " + getNumOfPrs());
 
         System.out.println("VISITED = " + getNumOfVisitedPrs());
 

@@ -7,7 +7,6 @@ public class Processor {
     Scheduler scheduler;
     Process_ currProcess;
     String name;
-    int current;
     int countContextSwitch;
 
     public Processor(Scheduler scheduler, String name){
@@ -20,9 +19,11 @@ public class Processor {
         Process_ next = scheduler.nextProcess();
 
         // This probably generates time gap between algorithms
-        if (next == null) return false;
+        //if (next == null) return false;
 
         // We should perform context switch for a different process (compare references)
+        // Number of context switches for RR with time quanta equal to 1 may not be
+        // equal to the number of processes, because not all of them are in the queue at the same time
         if (next != currProcess){
                 //System.out.println("[CONTEXT SWITCHING]");
                 countContextSwitch++;
@@ -30,24 +31,11 @@ public class Processor {
 
         currProcess = next;
 
-        // Process is first time visited
-        if (currProcess.getCompTime() == currProcess.getLeftTime()){
-            current++;
-        }
-
         currProcess.doJob(1);
-
-        if (currProcess.isTerminated()) {
-            current--;
-        }
-
         return true;
     }
 
     public Process_ getCurrProcess(){return currProcess;}
-
-    // Number of started, but not terminated processes
-    public int getNumOfPrs(){return current;}
 
     public int getNumOfContextSwitch(){return countContextSwitch;}
 
