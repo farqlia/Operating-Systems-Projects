@@ -77,7 +77,7 @@ public class Generator {
 
     public void next() {
 
-        if (ACCESS_GENERATOR.nextFloat() + access - .02 * intensity > (double)((timeToComplete) / (Time.get() + 1))
+        if (ACCESS_GENERATOR.nextFloat() + access > (double)((timeToComplete) / (Time.get() + 1))
                 || (Time.get() - timeToComplete == 1)){
 
             int howMany = 1 + (int)((intensity - 1) * chiSqrtDis.cumulativeProbability(9 * INTENSITY_GENERATOR.nextFloat()));
@@ -96,7 +96,7 @@ public class Generator {
                 numOfProcesses--;
                 if (numOfProcesses == 0) System.out.println("[LAST PROCESS ADDED][TIME] : " + Time.get() + "| " + p);
             }
-            access = -chance;
+            access = howMany * (-chance);
         } else {
             access += chance;
         }

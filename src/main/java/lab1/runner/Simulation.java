@@ -83,6 +83,8 @@ public class Simulation {
                 gen.next();
             }
 
+            System.out.println(scheduler.getNumOfProcesses());
+
             Time.increment();
 
             statistics.analyze();
@@ -93,7 +95,6 @@ public class Simulation {
 
         }
 
-        System.out.println("[TIME] = " + Time.get());
         statistics.showStatistics();
         statistics.totalStatistics();
 

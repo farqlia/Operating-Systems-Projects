@@ -11,4 +11,6 @@ public interface Scheduler {
     Process_ nextProcess();
 
     boolean isDone();
+
+    int getNumOfProcesses();
 }

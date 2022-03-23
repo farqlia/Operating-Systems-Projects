@@ -59,4 +59,9 @@ public class RR implements Scheduler {
         return processes.isEmpty();
     }
 
+    @Override
+    public int getNumOfProcesses() {
+        return processes.size();
+    }
+
 }

@@ -35,4 +35,9 @@ public class FCFS implements Scheduler{
         return processQueue.isEmpty();
     }
 
+    @Override
+    public int getNumOfProcesses() {
+        return processQueue.size();
+    }
+
 }

@@ -25,4 +25,9 @@ public class TrapScheduler implements Scheduler {
     public boolean isDone() {
         return p.isEmpty();
     }
+
+    @Override
+    public int getNumOfProcesses() {
+        return 0;
+    }
 }

@@ -4,15 +4,15 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final int quantaTime = 5;
+    private static final int quantaTime = 20;
     private static final int minDuration = 20;
     private static final int difference = 20;
-    private static final int intensity = 7;
-    private static final int iterations = 10000;
+    private static final int intensity = 2;
+    private static final int iterations = 100;
     private static final boolean showStatistics = false;
 
     // ??
-    private static final double phase = 0.0;
+    private static final double phase = 0.1;
     private static final double phaseLength = 0.05;
     private static final int multiplicant = 10;
 
