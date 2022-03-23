@@ -13,7 +13,7 @@ public class Generator {
     // max difference between the length of processes
     int difference;
     double access;
-    // Let the chance raise for the next process
+    // Manipulate the chance to add new process
     double chance = 0.1;
     // How many processes can enter at the same time
     int intensity;
@@ -40,6 +40,10 @@ public class Generator {
     // Time completion of all the current processes
     int timeToComplete;
 
+    int numOfProcessesInPhase;
+    int currentNumOfProcessesInPhase;
+    int phaseMoment;
+
     // phase is number between 0 - 8
     public Generator(int minDuration, int difference, int intensity,
                      int numOfProcesses, double phase, double phaseLength, int multiplicant, Scheduler... schedulers) {
@@ -47,13 +51,18 @@ public class Generator {
         this.difference = difference;
         this.intensity = intensity;
         this.numOfProcesses = numOfProcesses;
+        // Set to some high value to add a process at the beginning
         this.access = 10;
         this.phase = phase;
         this.phaseLength = phaseLength;
         this.multiplicant = multiplicant;
         this.schedulers = schedulers;
-        this.NUM_OF_PROCESSES = numOfProcesses;
         this.chiSqrtDis = new ChiSquaredDistribution(Math.max(1, 10 - this.intensity));
+        this.numOfProcessesInPhase = (int) (phaseLength * numOfProcesses);
+        this.NUM_OF_PROCESSES = numOfProcesses;
+        this.numOfProcesses = numOfProcesses - numOfProcessesInPhase;
+        this.phaseMoment = (int) (phase * NUM_OF_PROCESSES);
+        this.currentNumOfProcessesInPhase = numOfProcessesInPhase;
     }
 
     public Generator(Generator other, Scheduler ... schedulers) {
@@ -62,6 +71,7 @@ public class Generator {
         this.intensity = other.intensity;
         this.numOfProcesses = other.numOfProcesses;
         this.phaseLength = other.phaseLength;
+        this.phaseMoment = other.phaseMoment;
         this.phase = other.phase;
         this.multiplicant = other.multiplicant;
         this.NUM_OF_PROCESSES = other.numOfProcesses;
@@ -73,8 +83,11 @@ public class Generator {
         this.access = 1;
         this.chance = other.chance;
         this.chiSqrtDis = new ChiSquaredDistribution(Math.max(1, 10 - this.intensity));
+        this.numOfProcessesInPhase = other.numOfProcessesInPhase;
+        this.currentNumOfProcessesInPhase = numOfProcessesInPhase;
     }
 
+    // Adds next process(ess) to the schedulers' queues
     public void next() {
 
         if (ACCESS_GENERATOR.nextFloat() + access > (double)((timeToComplete) / (Time.get() + 1))
@@ -104,17 +117,24 @@ public class Generator {
     }
 
     private int getCompletionTime() {
-        int completionTime = getPhase();
-        if (completionTime == 0) completionTime = minDuration + (int) Math.abs((difference * NUM_GENERATOR.nextGaussian()));
-        return completionTime;
+        if (isPhase()) return getPhase();
+        else return  minDuration + (int) Math.abs((difference * NUM_GENERATOR.nextGaussian()));
     }
 
     private int getPhase(){
-        int val = (int) (phase * NUM_OF_PROCESSES);
-        if (phase != 0 && totalGenerated() >= val && totalGenerated() <= val + (phaseLength * NUM_OF_PROCESSES)){
+        if (isPhase()){
+            numOfProcesses += currentNumOfProcessesInPhase;
+            if (currentNumOfProcessesInPhase != 0) System.out.println("[PHASE] : " + Time.get() + ", " + currentNumOfProcessesInPhase);
+            currentNumOfProcessesInPhase = 0;
+
             return minDuration + (int) Math.abs(multiplicant * difference * NUM_GENERATOR.nextGaussian());
         }
         return 0;
+    }
+
+    private boolean isPhase(){
+        // val defines whether we are entering a phase
+        return  (phase != 0 && totalGenerated() >= phaseMoment && totalGenerated() <= numOfProcessesInPhase + phaseMoment);
     }
 
     public int totalGenerated() {

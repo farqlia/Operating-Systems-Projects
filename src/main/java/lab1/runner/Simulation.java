@@ -83,7 +83,7 @@ public class Simulation {
                 gen.next();
             }
 
-            System.out.println(scheduler.getNumOfProcesses());
+            //System.out.println(scheduler.getNumOfProcesses());
 
             Time.increment();
 
