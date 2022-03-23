@@ -1,8 +1,8 @@
-package lab1.statistics;
+package simulation_1.statistics;
 
-import lab1.processing.Process_;
-import lab1.processing.Processor;
-import lab1.schedulers.Time;
+import simulation_1.processing.Process_;
+import simulation_1.processing.Processor;
+import simulation_1.schedulers.Time;
 
 import java.util.ArrayList;
 
@@ -11,6 +11,7 @@ public class Statistics {
     private final Processor processor;
     private final String algName;
     private final int METRIC = 100;
+
     // Turnaround time is the time between the
     // arrival of the process and its completion
     private final ArrayList<Double> turnArndTimes;
@@ -57,6 +58,9 @@ public class Statistics {
         // What is the longest time a process had to wait
         double maxResponseTime = respTimes.stream().max(Double::compareTo).orElse(0.0) * METRIC;
 
+        double timeThreshold =  ((double) Time.get() / (2 * METRIC));
+        long numOfStarving = respTimes.stream().filter(x -> x.compareTo(timeThreshold) > 0).count();
+
         System.out.println("------ STATISTICS " + algName.toUpperCase() + "---------");
 
         System.out.println("TOTAL TIME : " + Time.get());
@@ -65,6 +69,7 @@ public class Statistics {
 
         System.out.printf("AVERAGE COMPLETION TIME: %2.2f \n", averageComplTime);
 
+        // Percentage measurement may not be the best to compare algorithms
         System.out.printf("AVERAGE RELATIVE COMPLETION TIME: %2.2f %%\n", (averageComplTime / Time.get() * 100));
 
         System.out.printf("AVERAGE RESPONSE TIME: %2.2f \n", averageRespnTime);
@@ -80,6 +85,10 @@ public class Statistics {
         System.out.printf("MAX RELATIVE RESPONSE TIME: %2.2f %%\n" ,(maxResponseTime / Time.get() * 100));
 
         System.out.println("NUMBER OF CONTEXT SWITCHES: " + processor.getNumOfContextSwitch());
+
+        System.out.printf("NUMBER OF STARVING %d \n", numOfStarving);
+
+        System.out.printf("RELATIVE NUMBER OF STARVING %2.6f %%\n", ((double)numOfStarving / getNumOfTerminatedPrs()));
     }
 
     public int getNumOfTerminatedPrs(){

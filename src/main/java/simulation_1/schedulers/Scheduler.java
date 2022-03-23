@@ -1,6 +1,6 @@
-package lab1.schedulers;
+package simulation_1.schedulers;
 
-import lab1.processing.Process_;
+import simulation_1.processing.Process_;
 
 public interface Scheduler {
 

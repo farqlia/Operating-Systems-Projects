@@ -1,10 +1,10 @@
-package lab1.runner;
+package simulation_1.runner;
 
 import java.util.Scanner;
 
 public class Main {
 
-    private static final int quantaTime = 20;
+    private static final int quantaTime = 5;
     private static final int minDuration = 20;
     private static final int difference = 20;
     private static final int intensity = 2;
@@ -12,9 +12,9 @@ public class Main {
     private static final boolean showStatistics = false;
 
     // ??
-    private static final double phase = 0.8;
-    private static final double phaseLength = 0.1;
-    private static final int multiplicant = 10;
+    private static final double phase = 0.5;
+    private static final double phaseLength = 0.001;
+    private static final int multiplicant = 20;
 
     static Scanner scanner = new Scanner(System.in);
 
@@ -35,7 +35,6 @@ public class Main {
                             phase, phaseLength, multiplicant);
 
                 simulation.runSimulation(input);
-
             }
         }
     }

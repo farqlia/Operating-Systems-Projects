@@ -1,6 +1,6 @@
-package lab1.processing;
+package simulation_1.processing;
 
-import lab1.schedulers.Scheduler;
+import simulation_1.schedulers.Scheduler;
 
 public class Processor {
 
@@ -18,7 +18,7 @@ public class Processor {
 
         // We should perform context switch for a different process (compare references)
         if (next != currProcess){
-                countContextSwitch++;
+            countContextSwitch++;
         }
 
         currProcess = next;

@@ -1,4 +1,4 @@
-package lab1.schedulers;
+package simulation_1.schedulers;
 
 // Global time
 public class Time {

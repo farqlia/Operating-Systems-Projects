@@ -1,9 +1,4 @@
-package lab1.visualization;
-
-import lab1.processesgenerator.*;
-import lab1.schedulers.Scheduler;
-
-import javax.swing.*;
+package simulation_1.donotlookhere;
 
 public class Main {
  /*

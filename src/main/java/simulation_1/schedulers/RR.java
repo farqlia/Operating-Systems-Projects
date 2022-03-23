@@ -1,6 +1,6 @@
-package lab1.schedulers;
+package simulation_1.schedulers;
 
-import lab1.processing.Process_;
+import simulation_1.processing.Process_;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -10,7 +10,6 @@ public class RR implements Scheduler {
     final int quanta;
     int interval;
     private Process_ process;
-    int longstWaitingTime;
 
     private final Deque<Process_> processes;
 

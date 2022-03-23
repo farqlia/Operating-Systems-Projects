@@ -1,6 +1,6 @@
-package lab1.schedulers;
+package simulation_1.schedulers;
 
-import lab1.processing.Process_;
+import simulation_1.processing.Process_;
 
 import java.util.*;
 
@@ -11,10 +11,10 @@ public class SJF implements Scheduler{
             Integer::compareTo).thenComparing(Process_::getId, Integer::compareTo);
     TreeSet<Process_> processes = new TreeSet<>(comp);
     Process_ process;
+
     @Override
     public void addProcess(Process_ process) {
         processes.add(process);
-
     }
 
     @Override

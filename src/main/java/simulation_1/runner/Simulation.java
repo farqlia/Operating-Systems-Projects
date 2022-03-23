@@ -1,9 +1,9 @@
-package lab1.runner;
+package simulation_1.runner;
 
-import lab1.processesgenerator.Generator;
-import lab1.processing.Processor;
-import lab1.schedulers.*;
-import lab1.statistics.Statistics;
+import simulation_1.processesgenerator.Generator;
+import simulation_1.processing.Processor;
+import simulation_1.schedulers.*;
+import simulation_1.statistics.Statistics;
 
 public class Simulation {
 

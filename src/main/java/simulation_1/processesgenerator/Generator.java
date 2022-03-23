@@ -1,8 +1,8 @@
-package lab1.processesgenerator;
+package simulation_1.processesgenerator;
 
-import lab1.processing.SimpleProcess;
-import lab1.schedulers.Scheduler;
-import lab1.schedulers.Time;
+import simulation_1.processing.SimpleProcess;
+import simulation_1.schedulers.Scheduler;
+import simulation_1.schedulers.Time;
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.Well19937c;
@@ -80,11 +80,11 @@ public class Generator {
         } else {
             this.schedulers = schedulers;
         }
-        this.access = 1;
+        this.access = 10;
         this.chance = other.chance;
         this.chiSqrtDis = new ChiSquaredDistribution(Math.max(1, 10 - this.intensity));
         this.numOfProcessesInPhase = other.numOfProcessesInPhase;
-        this.currentNumOfProcessesInPhase = numOfProcessesInPhase;
+        this.currentNumOfProcessesInPhase = other.numOfProcessesInPhase;
     }
 
     // Adds next process(ess) to the schedulers' queues
@@ -118,7 +118,7 @@ public class Generator {
 
     private int getCompletionTime() {
         if (isPhase()) return getPhase();
-        else return  minDuration + (int) Math.abs((difference * NUM_GENERATOR.nextGaussian()));
+        else return minDuration + (int) Math.abs((difference * NUM_GENERATOR.nextGaussian()));
     }
 
     private int getPhase(){
@@ -126,7 +126,6 @@ public class Generator {
             numOfProcesses += currentNumOfProcessesInPhase;
             if (currentNumOfProcessesInPhase != 0) System.out.println("[PHASE] : " + Time.get() + ", " + currentNumOfProcessesInPhase);
             currentNumOfProcessesInPhase = 0;
-
             return minDuration + (int) Math.abs(multiplicant * difference * NUM_GENERATOR.nextGaussian());
         }
         return 0;

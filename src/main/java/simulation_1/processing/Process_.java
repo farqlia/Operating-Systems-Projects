@@ -1,4 +1,4 @@
-package lab1.processing;
+package simulation_1.processing;
 
 public interface Process_ {
 

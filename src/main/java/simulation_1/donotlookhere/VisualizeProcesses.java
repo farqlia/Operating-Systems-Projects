@@ -1,7 +1,7 @@
-package lab1.visualization;
+package simulation_1.donotlookhere;
 
-import lab1.processing.Process_;
-import lab1.schedulers.Scheduler;
+import simulation_1.processing.Process_;
+import simulation_1.schedulers.Scheduler;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
