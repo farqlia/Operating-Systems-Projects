@@ -1,0 +1,163 @@
+Algorytmy mają optymalizować przejścia między
+sektorami tak, by te przemieszczenia były minimalne
+Nie interesuje nas czas, ale droga, natomiast
+przyjmujemy że jedno przejście to jedna jednostka
+czasu.
+Najlepiej, żeby wszystkie algorytmy operowały
+na tych samych danych.
+Statystycznie to by nie robiło różnicy.
+To nie jest tak, że mamy cały zbiór żądań, to
+nie wystarczy przejść dwa razy i wszystko obsłużę, to
+ma parę razy przejść.
+To dodawanie elementów jest bliźniacze do poprzedniego
+zadania.
+Coś do założeń: no są dynamicznie dodawane. Możemy mieć już
+wykonaną listę i jakieś arrival time'y, ale no żeby na
+bierząco coś było dodawane.
+1. FCFS
+2. SSTF
+3. SCAN
+4. C-SCAN
+MEGA WAŻNA RZECZ!!!!
+to trzeba oddzielić od EDF i FD-SCAN -> to nie jest tak, że mamy
+6 algorytmów. Mamy 4 algorytmy, ale te dwa to bardziej strategie
+obsługi żądań priorytetowych. Przynajmniej dla jednego z nich
+EDF i FD-SCAN. Można te permutacje, czyli 2 x 4 = 8.
+EDF i FD-SCAN można jako strategie, znaczy wzorzec strategia.
+Czyli 6 implementacji.
+1. FCFS
+Można startować z zera, są jakieś przykłady rozmieszczenia danych, że pozycja
+ma znaczenie, ale z zera jest okej.
+Co pierwsze się pojawiło, jest pierwsze obsługiwane.
+Suma po tych drogach daje ten wynik. Podobnie jak w poprzedniej
+symulacji, ale zamiast długości trwania, to jest droga.
+2. SSTF
+Problem pod tytułem jak zobrazować to, w którym momencie czasu
+jesteśmy. Ide do tego, do którego mam najkrótszą drogę.
+45, 80, 62, to obsługa jest
+45 -> 62 -> 80.
+Mamy dwie rzeczy. Żądanie musi mieć jakiś arrival time, przesunięcie
+głowicy o jeden to jest upływ czasu o jeden.
+Dane żądanie pojawia się w momencie, gdy głowica od momentu
+symulacji pokonała np. 120 jednostek. To jest pewne przedstawienie, jakaś
+wizualizacja. 1 jednostka drogi - 1 jednostka czasu.
+Te skosy to nie mają znaczenia, to tylko w celach wizualizacji.
+Możemy przyjąć, że nie możemy wylosować na czymś co jest zajęte, ale
+też można wylosować w to samo miejsce i np. zgarniam wszystkie naraz, albo mija
+jednostka czasu i zgarniam jeden, mija kolejna zgarniam kolejny itd.
+tak żeby łatwo było zaimplementować. Ale nie liczymy ile czasu głowica
+spędza nad danym sektorem. Kalka SJF ale przeniesiona na dysk.
+Czy zrobić wywłaszczenie - lepiej nie robić wywłaszczanie, czyli
+jak idziemy w jednym kierunku to już tam kontynuujemy ruch, a nie
+że przerywamy i zmieniamy kierunek.
+3. SCAN
+Startujemy ze skanowaniem w jednym kierunku, np w prawo, potem jak
+dojdę do końca, to do lewej krawędzi. Po drodze, jeśli natrafię
+na żądanie, które mogę obsłużyć, to to obsługuję.
+Problemem jest to, że tam do końca nic nie ma, to czy opłaca się iść.
+Ale inwestujemy czas i idziemy, i może przechodząc tą odległość to
+pojawi się jakieś żądanie bliskie tego.
+Są takie algorytmy, które nie przechodzą do końca, ale to tego nie.
+Przy końcach będzie bardziej efektywnie.
+To losowanie może nie odzwierciadlać prawdziwej sytuacji, nie
+uwzględnia prawidłowego zagęszczenia. Ale można te generatory tak zasymulować,
+aby takie sytuacje można było pokazać.
+Dodajemy kiedykolwiek. Scan nigdy nie zmienia kierunku przechodzenia.
+Żeby ta lista się zmieniała, np. czasem jest mało, a czasem jest dużo
+4. C-SCAN
+Wszystko to samo, różnica jest jedna: C-SCAN skanuje w jedną stronę.
+Jak dosięgniemy krawędzi, to skaczemy do drugiej i zaczynamy od niej:
+jak przeskakujemy, to nie wykonujemy żadnych żądań. Intuicja
+przeciwna do SCANU: jeżeli były żądania przy tej krawędzi, i dobjam
+się do krawędzi, to dla przeciwległej krawędzi mogło pojawić się
+dużo żądań, bo dużo czasu spędziliśmy przy jednej krawędzi.
+Nie jest ważne ile by czas zapisu, odczytu zajął. I to skanowanie
+jeżeli przenoszą przez powierzchnię dysku, w sensie to przesunięcie
+głowicy z końca do końca jest prawie bezkosztowna (ale można podobnie
+jak dla RR liczyć te przemieszczenia).
+--------------------------------------
+Strategie REAL TIME APP
+Minimum to dowolny algorytm i zaimplementowanie go z tymi dwoma
+stategiami dodatkowo.
+Czyli musimy dodawać jakiś priorytet - czyli te czasu rzeczywsitego,
+czyli chcemy zapewnić obsługę w jakimś skończonym czasie.
+30 - od momentu gdy się pojawiło ,to mamy 30 sekund (30 jednostek)
+na obsługę tego, o ile mamy szansę (czyli jesteśmy w odległości
+wystarczającej na dotarcie do tego).
+warunek zapewnienia wykonania zadania: deadline - droga >= 0
+EDF nie ma gwarancji wykonania w czasie, ale to nie obsługuje
+niczego innego niż te z priorytetem
+FD - SCAN
+Dopóki nie ma żądań RT, to stosujemy jeden z algorytmów wyżej,
+bo na liście są żądania RT i te normalne.
+W trakcie wykonywania żądania
+Dwa żądania RT i zwykłe - to zwykłe ignoruję, mimo że może być bliżej
+p : 60
+i1 : 25, d1 : 30
+i2 : 80, d2 : 35
+ale do RT1 nie zdążymy dojść, tzn deadline został przekroczony zanim
+tam dotarliśmy. Zaczęliśmy się przesuwać tam, gdzie jest deadline
+najkrótszy.
+wtedy d2 : 5, ale i tak idziemy w tą stronę. Ale to i tak
+nie zdążymy tam dotrzeć.
+On jest naiwny, tzn za wszelką cenę staramy się dążyć do tego celu.
+Wywłaszczenie, gdy przemieszcza się głowica do normalnego żądania
+i pojawia się RT, to porzucamy to żądanie i idziemy do RT, ale
+dla uproszczenia możemy kontynuować, czyli bez wywłaszczenia.
+FD nie olewa zwykłych, je też obsługujemy.
+To z najkrótszym deadline, bezwzględnie, jak jest głowica w drodze do
+tego RT, a pojawia się inny RT o krótszym deadline, ale to nie robimy wywłaszczenia.
+Wywłaszcznie gdy obsługujemy normalne, ale pojawia się RT, to
+idę do niego.
+To było dla EDF
+najniższy możliwy do spełnienia
+np deadline - (głowica - położenie)
+jeśli to jest ujemne, to odrzucam, bo nie można go wykonać
+jeśli znajdziemy jakies do wykonania, to tam dążymy, no i
+wykonujemy po drodze te żądania zwykłe.
+najdalsze, z najniższym możliwym czasem do wykonania.
+głowica: 60
+RT1 - i1 : 80, d1 : 35       delta1 = 15
+RT2 - i2 : 100, d2 : 41      delta2 = 1
+no i do którego idziemy.
+No i po drodze do 100, to obsłużymy też do RT1.
+Czyli wybieramy to co jest najdalej, czyli idziemy do i2.
+głowica : 60
+RT1 - i1 : 80, d1 : 35       delta1 = 15
+RT1 - i3 : 10, d3 : 55       delta3 : 5 (w lewą stronę)
+możemy mieć większy zapas czasu np. w prawą stronę i tam
+jakieś żądanie RT, a w lewo mniejszy, ale idziemy w lewo.
+No i to troche nie ma sensu.
+Ale jeśli chcemy policzyć, w którą stronę chcemy się poruszać, gdzie
+jest więcej RT, albo w ogóle więcej żądań.
+deadline - droga ; im mniej zostało przy przesunięciu głowicy,
+tym lepiej. Znaczy tak sortujemy.
+Są pojedyczne scenariusze, gdzie pozycja początkowa głowicy
+jest kluczowa, ale możemy od 0 zaczynać.
+-----------------------------------
+generowanie i wyniki
+statystyki:
+1. suma po drodze (nie średnia)
+2. warto liczyć czas oczekiwania
+Po jednej stronie dysku trochę, potem po drugiej stronie dysku,
+SSTF może utknąć w jednym miejscu, gdzie to zagęszczenie jest duże
+wylosowanie wszystkiego w środku: algorytm scan, to dużo będzie pustej
+drogi.
+Jak to czasowo: gęsto, czy rzadko, jakoś pod uwagę.
+Skrajne pomysły, w kwestii rozłożenia tego po dysku.
+Nie ma sensu rozkład normalny do losowania, bo dużo by się
+pojawiło w środkowej częsci, a dla reszty mało.
+Bardziej dla czasu, czyli dla czasu. Można rozkład normalny
+względem jakiegoś miejsca.
+W rozkładzie normalnym jest mało skrajnych elementów.
+Rozkład normalny: niewiele obszarów, które są rzadko odczytywane.
+Ale są miejsca cały czas wykorzystywane.
+Albo poprzygotowywać sekwencje testowe.
+Dla rozkładu normalnego można sobie wylosować średnią, a
+potem wylosować sobie (po jakimś czasie) nowy, i przez jakiś czas
+tak generować, żeby te lokalności uwzględniać. Dla SSTF może to być ciekawe.
+Czy SSTF dla się zdegenerować do SCAN? yup
+Dla EDF, FD-SCAN ilość nieobsłużonych real-time żądań.
+Jeśli nie ma RT, to jakiś normalny algorytm.
+Nie ma ograniczeń co do real-time, może być jeden/dwa, albo
+jest bardzo obciążony.
