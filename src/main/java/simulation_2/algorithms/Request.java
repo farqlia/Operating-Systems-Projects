@@ -2,21 +2,27 @@ package simulation_2.algorithms;
 
 public class Request {
 
-    private int position;
-    private int arrTime;
+    private final int position;
+    private final int arrTime;
     // 0 - normal request
     // >0 - how much time it can wait (or how many tracks)
     private int deadline;
+    private final boolean isPriority;
     private boolean missedDeadline;
 
     public Request(int position, int arrTime, int priority) {
         this.position = position;
         this.arrTime = arrTime;
         this.deadline = priority;
+        this.isPriority = (deadline > 0);
     }
 
     public Request(int position, int arrTime) {
         this(position, arrTime, 0);
+    }
+
+    public void decrementDeadline(){
+        deadline--;
     }
 
     public int getPosition() {
@@ -32,7 +38,7 @@ public class Request {
     }
 
     public boolean isPriorityRequest(){
-        return deadline > 0;
+        return isPriority;
     }
 
     public boolean isMissedDeadline(){
@@ -41,5 +47,16 @@ public class Request {
 
     public void setMissedDeadline(boolean missedDeadline){
         this.missedDeadline = missedDeadline;
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "position=" + position +
+                ", arrTime=" + arrTime +
+                ", deadline=" + deadline +
+                ", isPriority=" + isPriority +
+                ", missedDeadline=" + missedDeadline +
+                '}';
     }
 }

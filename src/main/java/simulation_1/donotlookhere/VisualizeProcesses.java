@@ -29,7 +29,7 @@ public class VisualizeProcesses extends JFrame {
 
         CategoryPlot plot = (CategoryPlot)histogram.getPlot();
 
-        //plot.getRangeAxis().setRange(0, 100);
+        //addData.getRangeAxis().setRange(0, 100);
 
         ChartPanel chartPanel = new ChartPanel(histogram);
 

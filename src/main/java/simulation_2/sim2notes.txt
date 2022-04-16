@@ -122,6 +122,7 @@ RT2 - i2 : 100, d2 : 41      delta2 = 1
 no i do którego idziemy.
 No i po drodze do 100, to obsłużymy też do RT1.
 Czyli wybieramy to co jest najdalej, czyli idziemy do i2.
+Czyli wybieramy najdalszy z najkrótszym możliwym do spełnienia czasie
 głowica : 60
 RT1 - i1 : 80, d1 : 35       delta1 = 15
 RT1 - i3 : 10, d3 : 55       delta3 : 5 (w lewą stronę)
@@ -161,3 +162,151 @@ Dla EDF, FD-SCAN ilość nieobsłużonych real-time żądań.
 Jeśli nie ma RT, to jakiś normalny algorytm.
 Nie ma ograniczeń co do real-time, może być jeden/dwa, albo
 jest bardzo obciążony.
+najdalsze możliwe do wykonania lub najbliższe o najniższym deadlinie
+jeżeli ten deadline minie, to zadanie przepada w ogóle
+moment wywłaszczenia tylko, gdy pojawia się żądanie real time
+scany cały czas jeżdzą, nawet gdy nie ma żądań
+ ---------------------------------------------
+public class Main {
+
+    public static void main(String[] args){
+        // sout(MyClass1.var)   tak sie nie da bo obiektu potrzebujemy
+        MyClass1 obj = new MyClass1()
+        sout(obj.var)     -> no 100
+
+        sout(MyClass2.var)   -> 1
+        MyClass2 obj = new MyClass2()
+        sout(obj.var)     -> no 100
+
+
+    }
+
+}
+// 1
+public class MyClass{
+
+    public int var = 1;
+
+    public MyClass(){
+        this.var = 100;
+    }
+
+}
+// 2
+public class MyClass{
+
+    public (final) static int var = 1;
+
+    public MyClass(){
+        this.var = 100;  (jak jest final to to sie nie skompiluje)
+    }
+
+}
+// 3
+public class MyClass{
+
+    public final int var;
+
+    public MyClass(){
+        this.var = 100;  to zadziała
+    }
+
+}
+// 4
+public class MyClass{
+
+    public final int var;
+
+    public MyClass(int var){
+        this.var = var;  to ma sens taki, że nie można tego nigdy zmienić, takie mamy bezpieczeństwo
+    }
+
+}
+
+public class MyClass{
+
+    public (static) final int var;
+    nie ma miejsca gdzie to inicjalizujemy
+
+}
+------------------------------------------
+public class Main {
+
+    public static void main(String[] args){
+        sout(MyClass.var)  -> 1
+        MyClass obj = new MyClass()
+        sout(obj.var)     -> no 100
+        sout(MyClass.var)  -> 100
+
+       MyClass obj2 = new MyClass()
+       obj2.var = 200
+       sout(obj.var)  -> 200, bo wszystkie obiekty mają do tego dostęp
+    }
+}
+
+klasa do powyższego
+
+public class MyClass{
+
+    public static int var = 1;     nie mamy final, więc możemy sobie to zmieniać
+
+    public MyClass(){
+        this.var = 100;    to sie dla wszystkich zmienia
+    }
+
+}
+
+public class Consts{
+
+    public static final String NAME = "name";
+
+}
+
+klasy które przetrzymują stałe
+robienie equals ze stringiem nie jest ładne,
+magic numbers też są dziwne
+
+4 modyfikatory dostępu
+private : inne obiekty tej samej klasy mają dostęp (np. klasa Element dla LL)
+protected
+package-private: to co w pakiecie
+
+final i static
+
+INNE NAWYKI mantra na okrągło powtarzana
+przed faktem
+jest strona
+formularz logowania
+login : _____________
+hasło : _____________
+
+WebApp/Przeglądarka      ->       sieć          -> serwer/DB
+                                   o
+login : _____________
+hasło : niebieski7
+f(x)   (x to jest hasło) -> wynik daje w postaci hash'a
+f(niebieski7) = 52ba981
+czy ta funkcja znajduje się po stronie przeglądarki czy po stronie serwer/DB
+czy wielokrotne szyfrowanie zwiększa bezpieczeństwo systemu? nie, zwykle nie nie jest to zysk
+co widzi ten człowiek
+jeśli szyfrowanie jest po drugiej stronie, to gość uzyska niebieski7
+SHA-3, on na niebieski7 wrzuca zapytanie, chce się zalogować, DB to sprawdza jest okej
+jeśli jest po stronie serwera, to ziomek dostaje już zhaszowane i wysyła do DB
+czyli nie ma znaczenia, czy szyfrujemy czy nie w obrębie aplikacji
+open relay PWR
+czyli watro szyfrować, bo wtedy w innych aplikacjach to uchroni
+
+if (warunek)
+return wartosc1
+else
+return wartosc2
+
+int wynik
+if (warunek){
+    wynik = wartosc1
+}
+...
+return wynik
+
+JAKA WERSJA ???
+jmp instrukcja skoku

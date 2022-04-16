@@ -6,4 +6,6 @@ public interface IGenerator {
 
     Request next();
 
+    int numOfGeneratedRequests();
+
 }

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Optional;
 
-public class FCFS extends Scheduler{
+public class FCFS extends AbstractScheduler {
 
     private final Deque<Request> queue = new ArrayDeque<>();
 
@@ -17,7 +17,7 @@ public class FCFS extends Scheduler{
     @Override
     public Optional<Request> nextRequest() {
 
-        Request request = queue.getFirst();
+        Request request = queue.peekFirst();
 
         if (request.getPosition() > getPosition()) {
             incPosition();
@@ -32,5 +32,10 @@ public class FCFS extends Scheduler{
     @Override
     public Collection<Request> getAllRequests() {
         return queue;
+    }
+
+    @Override
+    public boolean hasRequests() {
+        return !queue.isEmpty();
     }
 }
