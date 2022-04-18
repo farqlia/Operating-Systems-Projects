@@ -32,6 +32,7 @@ public class Disc {
             }
             numOfRequests++;
             currRequest = request.get();
+            currRequest.setServiceTime(numOfCylinderHeadMoves);
         } else {
             currRequest = null;
         }

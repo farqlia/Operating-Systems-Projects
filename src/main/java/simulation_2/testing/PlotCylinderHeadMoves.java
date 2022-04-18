@@ -1,69 +1,67 @@
 package simulation_2.testing;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import simulation_2.algorithms.Disc;
 import simulation_2.algorithms.Request;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Path2D;
+import java.util.List;
 
 public class PlotCylinderHeadMoves extends JFrame {
 
-    JFreeChart chart;
+    // List of generated requests
+    private List<Request> list;
+    private int discSize;
+    private int totalMoves;
+    private int width;
+    private int heightOffset;
+    private int height;
+    private final float strokeSize = 2.0f;
 
-    XYDataset dataset;
-    XYSeries series = new XYSeries("Cyilnder Moves");
+    public PlotCylinderHeadMoves(List<Request> list, int discSize, int totalMoves, int width, int height){
+        this.list = list;
+        this.discSize = discSize;
+        this.totalMoves = totalMoves;
+        this.width = width;
+        this.height = height;
+        this.heightOffset = list.get(0).getServiceTime();
 
-    public void initGUI(){
-        dataset = new XYSeriesCollection(series);
-        chart = createChart();
+        setSize(width, height);
 
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setBorder(BorderFactory.createEmptyBorder(15,
-                15, 15, 15));
-        chartPanel.setBackground(Color.WHITE);
-        add(chartPanel);
-
-        pack();
-
-        setTitle("Line chart");
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setVisible(true);
+        setLocationRelativeTo(null);
     }
 
-    private JFreeChart createChart(){
-
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "Disc Processing",
-                "Head Position",
-                "Time",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false
-        );
-
-        return chart;
-
+    private double scaleX(Request request){
+        return (double) request.getPosition() / discSize * width;
     }
 
-    public void addData(Disc disc){
+    private double scaleY(Request request){
+        return (double) (request.getServiceTime() - heightOffset) / totalMoves * height;
+    }
 
-        Request r = disc.getCurrRequest();
-        if (r != null){
-            series.add(disc.getCylinderHeadPosition(), disc.getNumOfCylinderHeadMoves());
+    private Path2D createPath(){
+
+        Path2D path = new Path2D.Double();
+        path.moveTo(scaleX(list.get(0)), scaleY(list.get(0)));
+        for (Request r : list){
+            path.lineTo(scaleX(r), scaleY(r));
         }
-
+        return path;
     }
 
+    @Override
+    public void paint(Graphics graphics){
+
+        Graphics2D g2D = (Graphics2D) graphics;
+        g2D.setBackground(Color.WHITE);
+        g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                // This should smooth the edges
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2D.setStroke(new BasicStroke(strokeSize));
+
+        g2D.draw(createPath());
+    }
 
 }

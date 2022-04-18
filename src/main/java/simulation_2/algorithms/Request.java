@@ -4,6 +4,7 @@ public class Request {
 
     private final int position;
     private final int arrTime;
+    private int serviceTime;
     // 0 - normal request
     // >0 - how much time it can wait (or how many tracks)
     private int deadline;
@@ -15,6 +16,14 @@ public class Request {
         this.arrTime = arrTime;
         this.deadline = priority;
         this.isPriority = (deadline > 0);
+    }
+
+    public void setServiceTime(int serviceTime) {
+        this.serviceTime = serviceTime;
+    }
+
+    public int getServiceTime() {
+        return serviceTime;
     }
 
     public Request(int position, int arrTime) {
