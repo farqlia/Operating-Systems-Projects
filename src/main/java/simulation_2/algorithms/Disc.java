@@ -6,18 +6,20 @@ import java.util.Optional;
 
 public class Disc {
 
+    // This is probably unnecessary
     private final List<Integer> waitingTimes;
     private final AbstractScheduler abstractScheduler;
+    private final int size;
 
-    private int numOfMissedDeadlines;
     private int numOfPriorityRequest;
     private int numOfRequests;
     private int numOfCylinderHeadMoves;
 
     private Request currRequest;
 
-    public Disc(AbstractScheduler abstractScheduler){
+    public Disc(AbstractScheduler abstractScheduler, int size){
         this.abstractScheduler = abstractScheduler;
+        this.size = size;
         waitingTimes = new ArrayList<>();
     }
 
@@ -43,7 +45,9 @@ public class Disc {
         return currRequest;
     }
 
-    public int getNumOfCylinderHeadMoves() {
+    public int size(){return size;};
+
+    public int getNumOfHeadMoves() {
         return numOfCylinderHeadMoves;
     }
 
@@ -51,15 +55,20 @@ public class Disc {
         return waitingTimes;
     }
 
-    public int getNumOfMissedDeadlines() {
-        return abstractScheduler.getNumOfRejectedRequests();
-    }
 
-    public int getNumOfRequests() {
+    public int getNumOfRealizedRequests() {
         return numOfRequests;
     }
 
-    public int getCylinderHeadPosition(){
+    public int getNumOfRequests() {
+        return numOfRequests + abstractScheduler.getNumOfRejectedRequests();
+    }
+
+    public int getNumOfProcessedPR() {
+        return numOfPriorityRequest;
+    }
+
+    public int getHeadPosition(){
         return abstractScheduler.getPosition();
     }
 

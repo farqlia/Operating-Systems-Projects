@@ -19,11 +19,9 @@ public class FCFS extends AbstractScheduler {
 
         Request request = queue.peekFirst();
 
-        if (request.getPosition() > getPosition()) {
-            incPosition();
-        } else if (request.getPosition() < getPosition()){
-            decPosition();
-        } else {
+        if (request.getPosition() > getPosition()) incPosition();
+        else if (request.getPosition() < getPosition()) decPosition();
+        else {
             return Optional.ofNullable(queue.pollFirst());
         }
         return Optional.empty();

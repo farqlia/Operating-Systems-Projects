@@ -35,15 +35,16 @@ public class Generator implements IGenerator{
     private final double sigma = Math.sqrt(2.0);
     private int currentMean;
 
-    // Count of total generated requests
     private int generatedRequests;
     private int generatedPriorityRequests;
-    private int totalRequests;
+    private final int totalRequests;
 
     private long sumOfPaths;
 
     private final double gaussMeanSwitchThreshold = 0.2;
     private final double priorityRequestsThreshold = 0.2;
+    private final double chance = 0.1;
+    private double currentChance = 0.1;
 
     public Generator(Disc disc, int totalRequests, boolean generatePriorityRequests, double percentageOfPriorityRequests, int deadline, double excess, int discSize, boolean gaussDist, int[] gaussDistMean) {
         this.disc = disc;
@@ -94,7 +95,7 @@ public class Generator implements IGenerator{
         && generatedPriorityRequests < (percentageOfPriorityRequests * totalRequests)){
             generatedPriorityRequests++;
             int value = PRIORITY_DEADLINE_GENERATOR.nextInt(deadline);
-            return (int) ((sumOfPaths - disc.getNumOfCylinderHeadMoves()) * chanceForDeadline) + value;
+            return (int) ((sumOfPaths - disc.getNumOfHeadMoves()) * chanceForDeadline) + value;
         } else return 0;
     }
 
@@ -107,16 +108,24 @@ public class Generator implements IGenerator{
     @Override
     public Request next() {
 
-        if (generatedRequests < totalRequests && ((double) sumOfPaths / (disc.getNumOfCylinderHeadMoves() + 1) <= ACCESS_GENERATOR.nextFloat() ||
-        generatedRequests - disc.getNumOfRequests() <= 1)){
+        if (generatedRequests < totalRequests && ((double) sumOfPaths / (disc.getNumOfHeadMoves() + 1) <= ACCESS_GENERATOR.nextFloat() + currentChance||
+        generatedRequests - disc.getNumOfRealizedRequests() <= 1)){
             int position = getPosition();
             int deadline = getDeadline();
-            Request request = new Request(position, disc.getNumOfCylinderHeadMoves(), deadline);
+            Request request = new Request(position, disc.getNumOfHeadMoves(), deadline);
             generatedRequests++;
             sumOfPaths += position;
+            currentChance = Math.max(0, currentChance - chance);
             return request;
+        } else {
+            currentChance += chance;
         }
         return null;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return numOfGeneratedRequests() != totalRequests;
     }
 
     @Override

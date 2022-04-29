@@ -35,8 +35,10 @@ public abstract class StrategyRT extends AbstractScheduler {
     }
 
     protected void setRequestAsRejected(Request request){
+        System.out.println("--------------------------------------");
+        System.out.println("[HEAD]" + getPosition() + " [REJECTED] : " + request);
+        System.out.println("--------------------------------------");
         numOfRejectedRequests++;
-        request.setMissedDeadline(true);
         abstractScheduler.getAllRequests().remove(request);
     }
 

@@ -4,18 +4,18 @@ public class Request {
 
     private final int position;
     private final int arrTime;
+    private final int deadline;
+
     private int serviceTime;
     // 0 - normal request
     // >0 - how much time it can wait (or how many tracks)
-    private int deadline;
-    private final boolean isPriority;
-    private boolean missedDeadline;
+    private int currDeadline;
 
     public Request(int position, int arrTime, int priority) {
         this.position = position;
         this.arrTime = arrTime;
+        this.currDeadline = priority;
         this.deadline = priority;
-        this.isPriority = (deadline > 0);
     }
 
     public void setServiceTime(int serviceTime) {
@@ -31,7 +31,7 @@ public class Request {
     }
 
     public void decrementDeadline(){
-        deadline--;
+        currDeadline--;
     }
 
     public int getPosition() {
@@ -42,20 +42,12 @@ public class Request {
         return arrTime;
     }
 
-    public int getDeadline() {
-        return deadline;
+    public int getCurrDeadline() {
+        return currDeadline;
     }
 
     public boolean isPriorityRequest(){
-        return isPriority;
-    }
-
-    public boolean isMissedDeadline(){
-        return missedDeadline;
-    }
-
-    public void setMissedDeadline(boolean missedDeadline){
-        this.missedDeadline = missedDeadline;
+        return deadline > 0;
     }
 
     @Override
@@ -64,8 +56,7 @@ public class Request {
                 "position=" + position +
                 ", arrTime=" + arrTime +
                 ", deadline=" + deadline +
-                ", isPriority=" + isPriority +
-                ", missedDeadline=" + missedDeadline +
+                ", isPriority=" + (deadline > 0) +
                 '}';
     }
 }

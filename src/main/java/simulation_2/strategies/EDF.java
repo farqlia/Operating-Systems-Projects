@@ -26,43 +26,49 @@ public class EDF extends StrategyRT{
         return abstractScheduler.getPosition();
     }
 
-    private Optional<Request> realizeRequest(){
+    private Optional<Request> setRequestAsRealized(){
         abstractScheduler.getAllRequests().remove(request);
         Optional<Request> result = Optional.of(request);
         request = null;
         return result;
     }
 
+    private void setPriorityRequestIfExists(){
+        Optional<Request> optRequest = abstractScheduler.getAllRequests()
+                .stream().filter(Request::isPriorityRequest)
+                .min(Comparator.comparingInt(Request::getCurrDeadline));
+
+        optRequest.ifPresent(value -> request = value);
+        optRequest.ifPresent(value -> System.out.println("[SWITCHED TO EDF] : " + getPosition()));
+    }
+
+
     @Override
     public Optional<Request> nextRequest() {
 
         if (request == null){
-            Optional<Request> optRequest = abstractScheduler.getAllRequests()
-                    .stream().filter(Request::isPriorityRequest)
-                    .min(Comparator.comparingInt(Request::getDeadline));
-
-            optRequest.ifPresent(value -> request = value);
+            setPriorityRequestIfExists();
         }
 
         if (request != null){
-
-            request.decrementDeadline();
 
             if (request.getPosition() > abstractScheduler.getPosition()) {
                 abstractScheduler.incPosition();
             } else if (request.getPosition() < abstractScheduler.getPosition()){
                 abstractScheduler.decPosition();
             } else {
-                return realizeRequest();
+                return setRequestAsRealized();
             }
 
-            if (request.getDeadline() == 0){
-                // Set as missed deadline and remove from the list
+            if (request.getCurrDeadline() == 0){
                 setRequestAsRejected(request);
                 request = null;
+            } else {
+                request.decrementDeadline();
             }
 
         } else {
+            // Call the normal algorithm
             return abstractScheduler.nextRequest();
         }
 
