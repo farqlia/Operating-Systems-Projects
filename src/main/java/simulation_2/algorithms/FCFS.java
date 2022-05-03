@@ -1,9 +1,6 @@
 package simulation_2.algorithms;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Optional;
+import java.util.*;
 
 public class FCFS extends AbstractScheduler {
 
@@ -11,7 +8,7 @@ public class FCFS extends AbstractScheduler {
 
     @Override
     public void addRequest(Request request) {
-        queue.addLast(request);
+        queue.offerLast(request);
     }
 
     @Override

@@ -8,7 +8,7 @@ public class PositionProducer implements Producer{
     private final RandomGenerator MEAN_CHANGE_GENERATOR = new Well19937c(3);
     private final RandomGenerator MEAN_POSITION_GENERATOR = new Well19937c(4);
     private final RandomGenerator GAUSS_POSITION_GENERATOR = new Well19937c(7);
-    private final double sigma = Math.sqrt(2.0);
+    private final double sigma = Math.sqrt(0.2);
     private final double gaussMeanSwitchThreshold = 0.2;
 
     private final int discSize;
@@ -26,13 +26,13 @@ public class PositionProducer implements Producer{
     private void changeCurrentMean(){
         if (MEAN_CHANGE_GENERATOR.nextFloat() < gaussMeanSwitchThreshold){
             currentMean = MEAN_POSITION_GENERATOR.nextInt(gaussDistMeans.length);
-            System.out.println("[PP][CURRENT MEAN] : " + currentMean);
+            //System.out.println("[PP][CURRENT MEAN] : " + currentMean);
         }
     }
 
     private int calculateGaussianPosition(){
         return (int)Math.min(discSize, Math.abs((GAUSS_POSITION_GENERATOR.nextGaussian() / (double)gaussDistMeans.length * sigma
-                + gaussDistMeans[currentMean] * .01) * discSize));
+                + gaussDistMeans[currentMean] * .01) * 100));
     }
 
     private int getGaussRequestPosition(){

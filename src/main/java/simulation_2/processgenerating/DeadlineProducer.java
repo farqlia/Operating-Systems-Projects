@@ -10,7 +10,7 @@ public class DeadlineProducer implements Producer{
     private final RandomGenerator PRIORITY_DEADLINE_GENERATOR = new Well19937c(5);
     private final RandomGenerator PRIORITY_GENERATOR = new Well19937c(6);
 
-    private final double priorityRequestsThreshold = 0.5;
+    private final double priorityRequestsThreshold = 0.15;
     private final int totalRequests;
     private boolean generatePR;
     private double percentageOfPR;
@@ -31,12 +31,13 @@ public class DeadlineProducer implements Producer{
     private void changeCurrentMean(){
         if (MEAN_CHANGE_GENERATOR.nextFloat() < priorityRequestsThreshold){
             currentMean = MEAN_POSITION_GENERATOR.nextInt(gaussDistMeans.length);
-            System.out.println("[DP][CURRENT MEAN] : " + currentMean);
+            //System.out.println("[DP][CURRENT MEAN] : " + currentMean);
         }
     }
 
-    // This method generates the coefficient which the base generator uses
-    private double calculateGaussianDeadline(){
+    // This method generates the coefficient that is used by the base generator
+    private double calculateGaussianCoefficient(){
+        // gaussian_normal * sqrt(sigma)
         return Math.abs(PRIORITY_DEADLINE_GENERATOR.nextGaussian() * Math.sqrt(gaussDistMeans[currentMean]));
         //return Math.abs((PRIORITY_DEADLINE_GENERATOR.nextGaussian() * sigma
          //       + gaussDistMeans[currentMean] * .01));
@@ -52,7 +53,7 @@ public class DeadlineProducer implements Producer{
         if (shouldGeneratePriorityRequest()){
             changeCurrentMean();
             numOfGeneratedPR++;
-            return calculateGaussianDeadline();
+            return calculateGaussianCoefficient();
         } else return 0;
     }
 

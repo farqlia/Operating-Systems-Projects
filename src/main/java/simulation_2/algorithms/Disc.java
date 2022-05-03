@@ -6,39 +6,47 @@ import java.util.Optional;
 
 public class Disc {
 
-    // This is probably unnecessary
     private final List<Integer> waitingTimes;
-    private final AbstractScheduler abstractScheduler;
+    private final AbstractScheduler scheduler;
     private final int size;
 
     private int numOfPriorityRequest;
     private int numOfRequests;
-    private int numOfCylinderHeadMoves;
+    private int numOfHeadMoves;
 
     private Request currRequest;
+    private int prevPosition;
 
-    public Disc(AbstractScheduler abstractScheduler, int size){
-        this.abstractScheduler = abstractScheduler;
+    public Disc(AbstractScheduler scheduler, int size){
+        this.scheduler = scheduler;
         this.size = size;
         waitingTimes = new ArrayList<>();
     }
 
     public void process(){
 
-        Optional<Request> request = abstractScheduler.nextRequest();
+        Optional<Request> request = scheduler.nextRequest();
 
         if (request.isPresent()){
-            waitingTimes.add(numOfCylinderHeadMoves - request.get().getArrTime());
+
+            waitingTimes.add(numOfHeadMoves - request.get().getArrTime());
             if (request.get().isPriorityRequest()){
                 numOfPriorityRequest++;
             }
             numOfRequests++;
             currRequest = request.get();
-            currRequest.setServiceTime(numOfCylinderHeadMoves);
+            currRequest.setServiceTime(numOfHeadMoves);
+
+            scheduler.getAllRequests().forEach(x -> System.out.print(x.getPosition() + " "));
+            System.out.println();
+
         } else {
             currRequest = null;
         }
-        numOfCylinderHeadMoves++;
+
+        numOfHeadMoves += (Math.abs(prevPosition - scheduler.getPosition()));
+        prevPosition = scheduler.getPosition();
+
     }
 
     public Request getCurrRequest() {
@@ -48,20 +56,19 @@ public class Disc {
     public int size(){return size;};
 
     public int getNumOfHeadMoves() {
-        return numOfCylinderHeadMoves;
+        return numOfHeadMoves;
     }
 
     public List<Integer> getWaitingTimes() {
         return waitingTimes;
     }
 
-
     public int getNumOfRealizedRequests() {
         return numOfRequests;
     }
 
     public int getNumOfRequests() {
-        return numOfRequests + abstractScheduler.getNumOfRejectedRequests();
+        return numOfRequests + scheduler.getNumOfRejectedRequests();
     }
 
     public int getNumOfProcessedPR() {
@@ -69,10 +76,6 @@ public class Disc {
     }
 
     public int getHeadPosition(){
-        return abstractScheduler.getPosition();
-    }
-
-    public boolean isDone(){
-        return !abstractScheduler.hasRequests();
+        return scheduler.getPosition();
     }
 }

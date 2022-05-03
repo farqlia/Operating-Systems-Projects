@@ -1,10 +1,10 @@
 package simulation_2.strategies;
 
-import org.apache.commons.math3.analysis.function.Abs;
 import simulation_2.algorithms.Request;
 import simulation_2.algorithms.AbstractScheduler;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public abstract class StrategyRT extends AbstractScheduler {
 
@@ -12,21 +12,40 @@ public abstract class StrategyRT extends AbstractScheduler {
     // requests
     // Is empty if there is no real-time
     // request in the queue
-    protected AbstractScheduler abstractScheduler;
+    protected AbstractScheduler scheduler;
     private int numOfRejectedRequests;
 
-    public StrategyRT(AbstractScheduler abstractScheduler){
-        this.abstractScheduler = abstractScheduler;
+    public StrategyRT(AbstractScheduler scheduler){
+        this.scheduler = scheduler;
         this.numOfRejectedRequests = 0;
     }
 
+    //protected abstract Optional<Request> nextPriorityRequest();
+
+    //protected abstract Request getRequest();
+
+    protected void decrementDeadlines(){
+        scheduler.getAllRequests().stream().filter(Request::isPriorityRequest)
+                .forEach(Request::decrementDeadline);
+    }
+
     public Collection<Request> getAllRequests(){
-        return abstractScheduler.getAllRequests();
+        return scheduler.getAllRequests();
+    }
+
+    @Override
+    public int getPosition(){
+        return scheduler.getPosition();
+    }
+
+    @Override
+    public void addRequest(Request request) {
+        scheduler.addRequest(request);
     }
 
     @Override
     public boolean hasRequests() {
-        return abstractScheduler.hasRequests();
+        return scheduler.hasRequests();
     }
 
     @Override
@@ -39,7 +58,7 @@ public abstract class StrategyRT extends AbstractScheduler {
         System.out.println("[HEAD]" + getPosition() + " [REJECTED] : " + request);
         System.out.println("--------------------------------------");
         numOfRejectedRequests++;
-        abstractScheduler.getAllRequests().remove(request);
+        scheduler.getAllRequests().remove(request);
     }
 
 }

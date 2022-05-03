@@ -2,8 +2,7 @@ package simulation_2.strategies;
 
 import simulation_2.algorithms.AbstractScheduler;
 import simulation_2.algorithms.Request;
-
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Optional;
 
 // In this strategy we choose the request with the earliest deadline
@@ -16,60 +15,64 @@ public class EDF extends StrategyRT{
         super(abstractScheduler);
     }
 
-    @Override
-    public void addRequest(Request request) {
-        abstractScheduler.addRequest(request);
+    private Optional<Request> realizeRequest(){
+        scheduler.getAllRequests().remove(request);
+        return Optional.of(request);
     }
 
-    @Override
-    public int getPosition(){
-        return abstractScheduler.getPosition();
-    }
+    private void findNextAndRemoveNotFeasible(){
+        Request r = null;
+        int minDeadline = 0;
+        Iterator<Request> iter = scheduler.getAllRequests().iterator();
+        while (iter.hasNext()){
+            r = iter.next();
+            if (r.isPriorityRequest()){
+                if (r.getCurrDeadline() < minDeadline){
+                   request = r;
+                } else if (r.getCurrDeadline() <= 0){
+                    // We have to remove all the requests which deadlines are missed
+                    iter.remove();
+                    setRequestAsRejected(r);
+                }
+            }
+        }
 
-    private Optional<Request> setRequestAsRealized(){
-        abstractScheduler.getAllRequests().remove(request);
-        Optional<Request> result = Optional.of(request);
-        request = null;
-        return result;
-    }
-
-    private void setPriorityRequestIfExists(){
-        Optional<Request> optRequest = abstractScheduler.getAllRequests()
-                .stream().filter(Request::isPriorityRequest)
-                .min(Comparator.comparingInt(Request::getCurrDeadline));
-
-        optRequest.ifPresent(value -> request = value);
-        optRequest.ifPresent(value -> System.out.println("[SWITCHED TO EDF] : " + getPosition()));
     }
 
 
     @Override
     public Optional<Request> nextRequest() {
 
+        // This must be called in a very specific moment, that is, when the priority request
+        // has just been realized or rejected in the previous call
+        if (request != null && !scheduler.getAllRequests().contains(request)){
+            request = null;
+            scheduler.refresh();
+        }
+
         if (request == null){
-            setPriorityRequestIfExists();
+            findNextAndRemoveNotFeasible();
+            if (request != null) System.out.println("[SWITCHED TO EDF] : " + getPosition());
         }
 
         if (request != null){
 
-            if (request.getPosition() > abstractScheduler.getPosition()) {
-                abstractScheduler.incPosition();
-            } else if (request.getPosition() < abstractScheduler.getPosition()){
-                abstractScheduler.decPosition();
+            if (request.getPosition() > scheduler.getPosition()) {
+                scheduler.incPosition();
+            } else if (request.getPosition() < scheduler.getPosition()){
+                scheduler.decPosition();
             } else {
-                return setRequestAsRealized();
+                return realizeRequest();
             }
 
             if (request.getCurrDeadline() == 0){
                 setRequestAsRejected(request);
-                request = null;
-            } else {
-                request.decrementDeadline();
             }
+            decrementDeadlines();
 
         } else {
             // Call the normal algorithm
-            return abstractScheduler.nextRequest();
+            return scheduler.nextRequest();
         }
 
         return Optional.empty();
@@ -77,7 +80,7 @@ public class EDF extends StrategyRT{
 
     @Override
     public boolean hasRequests(){
-        return abstractScheduler.hasRequests();
+        return scheduler.hasRequests();
     }
 
 }

@@ -1,31 +1,29 @@
 package simulation_2.simulation;
 
-import simulation_2.algorithms.Disc;
-import simulation_2.algorithms.FCFS;
-import simulation_2.algorithms.Request;
-import simulation_2.algorithms.AbstractScheduler;
+import simulation_2.algorithms.*;
 import simulation_2.processgenerating.*;
 import simulation_2.strategies.EDF;
+import simulation_2.strategies.FD_SCAN;
 
 import java.util.Iterator;
 
 public class Simulation implements Iterable<Request> {
 
-    private int discSize = 100;
-    private final AbstractScheduler abstractScheduler = new EDF(new FCFS());
+    private int discSize = 200;
+    private final AbstractScheduler abstractScheduler = new EDF(new SCAN(discSize));
     private final Disc disc = new Disc(abstractScheduler, discSize);
 
-    private double percentageOfPriorityRequests = 0.1;
+    private double percentageOfPriorityRequests = 0.2;
     private int deadline = 20;
-    private int[] posGaussDistMean = {10, 50, 90};
-    private double[] deadlineGaussDistMean = {0.2, 5, 1};
-    private int totalRequests = 1000;
+    private int[] posGaussDistMean = {10, 190};
+    private double[] deadlineGaussDistMean = {1, 0.5, 0.2};
+    private int totalRequests = 100;
 
     private final Producer positionProducer = new PositionProducer(discSize, posGaussDistMean);
     private final Producer deadlineProducer = new DeadlineProducer(totalRequests, deadline,
             deadlineGaussDistMean, true, percentageOfPriorityRequests);
 
-    private final IGenerator generator = new BaseGenerator(disc, totalRequests,
+    private final Generator generator = new BaseGenerator(disc, totalRequests,
             positionProducer, deadlineProducer);
 
     public int getDiscSize(){return discSize;}
@@ -41,13 +39,16 @@ public class Simulation implements Iterable<Request> {
     public void printStatistics(){
 
         double avgWaitingTime = ((double)disc.getWaitingTimes().stream().reduce(Integer::sum).orElse(0) / disc.getNumOfRealizedRequests());
+        double maxWaitingTime = (double)disc.getWaitingTimes().stream().max(Integer::compareTo).orElse(0);
 
         System.out.println("TOTAL CYLINDER MOVES : " + disc.getNumOfHeadMoves());
         System.out.println("NUMBER OF REQUESTS : " + disc.getNumOfRealizedRequests());
         System.out.println("NUMBER OF MISSED DEADLINES : " + abstractScheduler.getNumOfRejectedRequests());
         System.out.println("NUMBER OF PRIORITY REQUESTS : " + (disc.getNumOfProcessedPR() + abstractScheduler.getNumOfRejectedRequests()));
         System.out.printf("AVERAGE WAITING TIME : %.2f\n", avgWaitingTime);
-        System.out.printf("AVERAGE RELATIVE WAITING TIME : %.2f\n", (avgWaitingTime / disc.getNumOfHeadMoves()) * 100);
+        System.out.printf("AVERAGE RELATIVE WAITING TIME : %.2f\n", (avgWaitingTime / discSize));
+        System.out.printf("MAX WAITING TIME : %f\n", maxWaitingTime);
+        System.out.printf("MAX RELATIVE WAITING TIME :%.2f\n", (maxWaitingTime/ discSize));
 
     }
 
@@ -56,7 +57,7 @@ public class Simulation implements Iterable<Request> {
             System.out.println("--------------------------------------");
             System.out.println("[PROCESSING] : " + disc.getCurrRequest());
             System.out.println("--------------------------------------");
-            System.out.println("[HEAD] : " + abstractScheduler.getPosition());
+            //System.out.println("[HEAD] : " + abstractScheduler.getPosition());
             System.out.println("[HEAD MOVES] : " + disc.getNumOfHeadMoves());
             System.out.println("[TOTAL PROCESSED] : " + disc.getNumOfRealizedRequests());
         }
@@ -67,8 +68,8 @@ public class Simulation implements Iterable<Request> {
             Request r = generator.next();
             if (r != null) {
                 abstractScheduler.addRequest(r);
-                System.out.println("[GENERATED] : " + r);
-                System.out.println("[TOTAL GENERATED] : " + generator.numOfGeneratedRequests());
+                //System.out.println("[GENERATED] : " + r);
+                //System.out.println("[TOTAL GENERATED] : " + generator.numOfGeneratedRequests());
             }
         }
     }
