@@ -1,6 +1,7 @@
 package simulation_2.strategies;
 
 import simulation_2.algorithms.AbstractScheduler;
+import simulation_2.algorithms.PrintStatistics;
 import simulation_2.algorithms.Request;
 import java.util.Iterator;
 import java.util.Optional;
@@ -22,17 +23,19 @@ public class EDF extends StrategyRT{
 
     private void findNextAndRemoveNotFeasible(){
         Request r = null;
-        int minDeadline = 0;
+        int minDeadline = Integer.MAX_VALUE;
         Iterator<Request> iter = scheduler.getAllRequests().iterator();
         while (iter.hasNext()){
             r = iter.next();
             if (r.isPriorityRequest()){
-                if (r.getCurrDeadline() < minDeadline){
+                if (r.getCurrDeadline() <= 0 && r.getPosition() != scheduler.getPosition()){
+                // We have to remove all the requests which deadlines are missed
+                iter.remove();
+                setRequestAsRejected(r);
+                }
+                else if (r.getCurrDeadline() < minDeadline){
                    request = r;
-                } else if (r.getCurrDeadline() <= 0){
-                    // We have to remove all the requests which deadlines are missed
-                    iter.remove();
-                    setRequestAsRejected(r);
+                   minDeadline = r.getCurrDeadline();
                 }
             }
         }
@@ -52,7 +55,7 @@ public class EDF extends StrategyRT{
 
         if (request == null){
             findNextAndRemoveNotFeasible();
-            if (request != null) System.out.println("[SWITCHED TO EDF] : " + getPosition());
+            if (request != null && PrintStatistics.print) System.out.println("[SWITCHED TO EDF] : " + getPosition());
         }
 
         if (request != null){
@@ -65,10 +68,11 @@ public class EDF extends StrategyRT{
                 return realizeRequest();
             }
 
+            decrementDeadlines();
+
             if (request.getCurrDeadline() == 0){
                 setRequestAsRejected(request);
             }
-            decrementDeadlines();
 
         } else {
             // Call the normal algorithm

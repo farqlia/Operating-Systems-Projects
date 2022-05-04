@@ -37,14 +37,15 @@ public class Disc {
             currRequest = request.get();
             currRequest.setServiceTime(numOfHeadMoves);
 
-            scheduler.getAllRequests().forEach(x -> System.out.print(x.getPosition() + " "));
-            System.out.println();
-
+            if (PrintStatistics.print){
+                scheduler.getAllRequests().forEach(x -> System.out.print(x.getPosition() + " "));
+                System.out.println();
+            }
         } else {
             currRequest = null;
         }
 
-        numOfHeadMoves += (Math.abs(prevPosition - scheduler.getPosition()));
+        numOfHeadMoves += (prevPosition == scheduler.getPosition() ? 0 : 1);
         prevPosition = scheduler.getPosition();
 
     }

@@ -8,4 +8,6 @@ public interface Generator {
 
     boolean hasNext();
 
+    int getNumberOfGenerated();
+
 }

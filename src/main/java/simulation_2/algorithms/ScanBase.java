@@ -19,7 +19,7 @@ public class ScanBase extends AbstractScheduler{
     public void reposition(){
         if (scheduler.getPosition() <= 0){
             direction = Direction.RIGHT;
-        } else if (scheduler.getPosition() == discSize){
+        } else if (scheduler.getPosition() > discSize){
             direction = Direction.LEFT;
         }
     }
@@ -28,10 +28,13 @@ public class ScanBase extends AbstractScheduler{
         this.direction = direction;
     }
 
+    public Direction getDirection(){
+        return direction;
+    }
 
     public void move(){
-        direction.move(scheduler);
         reposition();
+        direction.move(scheduler);
     }
 
     private Optional<Request> retrieveRequest(){

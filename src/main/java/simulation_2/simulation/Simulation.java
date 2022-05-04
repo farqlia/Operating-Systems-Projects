@@ -9,22 +9,28 @@ import java.util.Iterator;
 
 public class Simulation implements Iterable<Request> {
 
-    private int discSize = 200;
-    private final AbstractScheduler abstractScheduler = new EDF(new SCAN(discSize));
-    private final Disc disc = new Disc(abstractScheduler, discSize);
+    private final int discSize;
+    private final AbstractScheduler abstractScheduler;
+    private final Disc disc;
 
-    private double percentageOfPriorityRequests = 0.2;
-    private int deadline = 20;
-    private int[] posGaussDistMean = {10, 190};
-    private double[] deadlineGaussDistMean = {1, 0.5, 0.2};
-    private int totalRequests = 100;
+    private int initVal = 100;
+    private int numOfPR = (int)((0.1) * initVal);
+    private int totalRequests = initVal - numOfPR;
 
-    private final Producer positionProducer = new PositionProducer(discSize, posGaussDistMean);
-    private final Producer deadlineProducer = new DeadlineProducer(totalRequests, deadline,
-            deadlineGaussDistMean, true, percentageOfPriorityRequests);
+    private int[] posGaussDistMean = {190, 50, 100, 10};
+    private double[] deadlineGaussDistMean = {5, 1, 0.5, 0.3};
 
-    private final Generator generator = new BaseGenerator(disc, totalRequests,
-            positionProducer, deadlineProducer);
+    private final boolean generatePR;
+
+    private final Generator generator;
+
+    public Simulation(AbstractScheduler scheduler, int discSize, boolean generatePR){
+        this.discSize = discSize;
+        this.generatePR = generatePR;
+        this.abstractScheduler = scheduler;
+        this.disc = new Disc(abstractScheduler, discSize);
+        this.generator = new PGenerator(disc, initVal, generatePR, numOfPR, deadlineGaussDistMean, posGaussDistMean);
+    }
 
     public int getDiscSize(){return discSize;}
     public int getTotalHeadMoves(){return disc.getNumOfHeadMoves();}
@@ -40,11 +46,16 @@ public class Simulation implements Iterable<Request> {
 
         double avgWaitingTime = ((double)disc.getWaitingTimes().stream().reduce(Integer::sum).orElse(0) / disc.getNumOfRealizedRequests());
         double maxWaitingTime = (double)disc.getWaitingTimes().stream().max(Integer::compareTo).orElse(0);
+        int numOfPR = (disc.getNumOfProcessedPR() + abstractScheduler.getNumOfRejectedRequests());
 
         System.out.println("TOTAL CYLINDER MOVES : " + disc.getNumOfHeadMoves());
-        System.out.println("NUMBER OF REQUESTS : " + disc.getNumOfRealizedRequests());
-        System.out.println("NUMBER OF MISSED DEADLINES : " + abstractScheduler.getNumOfRejectedRequests());
-        System.out.println("NUMBER OF PRIORITY REQUESTS : " + (disc.getNumOfProcessedPR() + abstractScheduler.getNumOfRejectedRequests()));
+        System.out.println("NUMBER OF REQUESTS : " + (disc.getNumOfRequests()));
+        System.out.println("NUMBER OF REALIZED REQUESTS : " + (disc.getNumOfRealizedRequests()));
+        if (generatePR){
+            System.out.println("NUMBER OF MISSED DEADLINES : " + abstractScheduler.getNumOfRejectedRequests());
+            System.out.println("NUMBER OF PRIORITY REQUESTS : " + numOfPR);
+            System.out.printf("PERCENTAGE OF MISSED DEADLINES : %.2f%%\n", (abstractScheduler.getNumOfRejectedRequests() / (double) numOfPR) * 100);
+        }
         System.out.printf("AVERAGE WAITING TIME : %.2f\n", avgWaitingTime);
         System.out.printf("AVERAGE RELATIVE WAITING TIME : %.2f\n", (avgWaitingTime / discSize));
         System.out.printf("MAX WAITING TIME : %f\n", maxWaitingTime);
@@ -68,8 +79,8 @@ public class Simulation implements Iterable<Request> {
             Request r = generator.next();
             if (r != null) {
                 abstractScheduler.addRequest(r);
-                //System.out.println("[GENERATED] : " + r);
-                //System.out.println("[TOTAL GENERATED] : " + generator.numOfGeneratedRequests());
+                if (PrintStatistics.print) System.out.println("[GENERATED] : " + r);
+                //System.out.println("[TOTAL GENERATED] : " + generator.);
             }
         }
     }
@@ -77,8 +88,9 @@ public class Simulation implements Iterable<Request> {
     private void process(){
         randomlyAddNewRequest();
         disc.process();
-        printInfoAboutRequest();
+        if (PrintStatistics.print) printInfoAboutRequest();
     }
+
 
     @Override
     public Iterator<Request> iterator() {

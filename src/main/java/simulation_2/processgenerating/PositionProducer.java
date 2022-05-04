@@ -44,4 +44,9 @@ public class PositionProducer implements Producer{
     public double produce() {
         return getGaussRequestPosition();
     }
+
+    @Override
+    public int numOfProduced() {
+        return -1;//not important
+    }
 }

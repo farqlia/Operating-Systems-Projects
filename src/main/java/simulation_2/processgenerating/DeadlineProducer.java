@@ -10,21 +10,19 @@ public class DeadlineProducer implements Producer{
     private final RandomGenerator PRIORITY_DEADLINE_GENERATOR = new Well19937c(5);
     private final RandomGenerator PRIORITY_GENERATOR = new Well19937c(6);
 
-    private final double priorityRequestsThreshold = 0.15;
+    private final double priorityRequestsThreshold = 0.4;
     private final int totalRequests;
     private boolean generatePR;
-    private double percentageOfPR;
-    private int deadline;
+    private int numOfPR;
     private int numOfGeneratedPR;
     private int currentMean;
     private double gaussDistMeans[];
 
-    public DeadlineProducer(int totalRequests, int deadline, double[] gaussDistMeans,
-                            boolean generatePR, double percentageOfPR) {
+    public DeadlineProducer(int totalRequests, double[] gaussDistMeans,
+                            boolean generatePR, int numOfPR) {
         this.generatePR = generatePR;
-        this.percentageOfPR = percentageOfPR;
+        this.numOfPR = numOfPR;
         this.totalRequests = totalRequests;
-        this.deadline = deadline;
         this.gaussDistMeans = gaussDistMeans;
     }
 
@@ -38,14 +36,14 @@ public class DeadlineProducer implements Producer{
     // This method generates the coefficient that is used by the base generator
     private double calculateGaussianCoefficient(){
         // gaussian_normal * sqrt(sigma)
-        return Math.abs(PRIORITY_DEADLINE_GENERATOR.nextGaussian() * Math.sqrt(gaussDistMeans[currentMean]));
+        return Math.abs((PRIORITY_DEADLINE_GENERATOR.nextGaussian()) * Math.sqrt(gaussDistMeans[currentMean]));
         //return Math.abs((PRIORITY_DEADLINE_GENERATOR.nextGaussian() * sigma
          //       + gaussDistMeans[currentMean] * .01));
     }
 
     private boolean shouldGeneratePriorityRequest(){
         return generatePR && (PRIORITY_GENERATOR.nextFloat() < priorityRequestsThreshold)
-                && numOfGeneratedPR < (percentageOfPR * totalRequests);
+                && (numOfGeneratedPR < numOfPR);
     }
 
     private double getDeadline(){
@@ -60,5 +58,10 @@ public class DeadlineProducer implements Producer{
     @Override
     public double produce() {
         return getDeadline();
+    }
+
+    @Override
+    public int numOfProduced() {
+        return numOfGeneratedPR;
     }
 }

@@ -1,5 +1,6 @@
 package simulation_2.strategies;
 
+import simulation_2.algorithms.PrintStatistics;
 import simulation_2.algorithms.Request;
 import simulation_2.algorithms.AbstractScheduler;
 
@@ -54,9 +55,11 @@ public abstract class StrategyRT extends AbstractScheduler {
     }
 
     protected void setRequestAsRejected(Request request){
-        System.out.println("--------------------------------------");
-        System.out.println("[HEAD]" + getPosition() + " [REJECTED] : " + request);
-        System.out.println("--------------------------------------");
+        if (PrintStatistics.print){
+            System.out.println("--------------------------------------");
+            System.out.println("[HEAD]" + getPosition() + " [REJECTED] : " + request);
+            System.out.println("--------------------------------------");
+        }
         numOfRejectedRequests++;
         scheduler.getAllRequests().remove(request);
     }

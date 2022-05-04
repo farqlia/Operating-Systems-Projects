@@ -57,7 +57,7 @@ public class FD_SCAN extends StrategyRT {
         if (request == null){
             findNextAndRemoveNotFeasible();
             if (request != null){
-                System.out.println("[SWITCHED TO FD-SCAN][HEAD] " + getPosition());
+                //System.out.println("[SWITCHED TO FD-SCAN][HEAD] " + getPosition());
             }
         }
 
