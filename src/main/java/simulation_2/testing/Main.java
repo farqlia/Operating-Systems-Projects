@@ -9,7 +9,7 @@ public class Main {
 
     private int discSize = 200;
 
-    private void run(AbstractScheduler scheduler, boolean gPR, String algName){
+    private void run(Scheduler scheduler, boolean gPR, String algName){
         System.out.println("---------" + algName + "------------");
         Simulation simulation = new Simulation(scheduler, discSize, gPR);
         simulation.run();
@@ -18,17 +18,17 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        //main.run();
-        //main.runEDFs();
+        main.run();
+        main.runEDFs();
         System.out.println();
         main.runFD_SCANs();
     }
 
     private void run(){
-        run(new FCFS(), false, "FCFS");
-        run(new SSTF(), false, "SSTF");
-        run(new SCAN(discSize), false,"SCAN");
-        run(new C_SCAN(discSize), false,"C_SCAN");
+        run(new FCFS(), true, "FCFS");
+        run(new SSTF(), true, "SSTF");
+        run(new SCAN(discSize), true,"SCAN");
+        run(new C_SCAN(discSize), true,"C_SCAN");
     }
 
     private void runEDFs(){
@@ -43,10 +43,11 @@ public class Main {
     private void runFD_SCANs(){
         System.out.println("-------- FD_SCANs ------------");
         boolean gPR = true;
-        //run(new FD_SCAN(new FCFS(), discSize), gPR, "FCFS");
+
+        run(new FD_SCAN(new FCFS(), discSize), gPR, "FCFS");
         run(new FD_SCAN(new SSTF(), discSize), gPR, "SSTF");
-        //run(new FD_SCAN(new SCAN(discSize), discSize), gPR,"SCAN");
-        //run(new FD_SCAN(new C_SCAN(discSize), discSize), gPR,"C_SCAN");
+        run(new FD_SCAN(new SCAN(discSize), discSize), gPR,"SCAN");
+        run(new FD_SCAN(new C_SCAN(discSize), discSize), gPR,"C_SCAN");
     }
 
 }

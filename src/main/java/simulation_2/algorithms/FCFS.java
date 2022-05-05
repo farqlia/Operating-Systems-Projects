@@ -2,7 +2,7 @@ package simulation_2.algorithms;
 
 import java.util.*;
 
-public class FCFS extends AbstractScheduler {
+public class FCFS extends Scheduler {
 
     private final Deque<Request> queue = new ArrayDeque<>();
 

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class C_SCAN extends AbstractScheduler{
+public class C_SCAN extends Scheduler {
 
     private List<Request> requests;
     private ScanBase scanner;
@@ -14,7 +14,7 @@ public class C_SCAN extends AbstractScheduler{
     public C_SCAN(int discSize){
         this.requests = new LinkedList<>();
         this.discSize = discSize;
-        this.scanner = new ScanBase(this, discSize);
+        this.scanner = new ScanBase(this);
     }
 
     @Override
@@ -26,6 +26,7 @@ public class C_SCAN extends AbstractScheduler{
         if (getPosition() == discSize){
             scanner.setDirection(Direction.JUMP_TO_0);
         }
+        else scanner.setDirection(Direction.RIGHT);
     }
 
     @Override

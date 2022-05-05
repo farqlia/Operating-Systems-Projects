@@ -7,7 +7,7 @@ import java.util.Optional;
 public class Disc {
 
     private final List<Integer> waitingTimes;
-    private final AbstractScheduler scheduler;
+    private final Scheduler scheduler;
     private final int size;
 
     private int numOfPriorityRequest;
@@ -17,7 +17,7 @@ public class Disc {
     private Request currRequest;
     private int prevPosition;
 
-    public Disc(AbstractScheduler scheduler, int size){
+    public Disc(Scheduler scheduler, int size){
         this.scheduler = scheduler;
         this.size = size;
         waitingTimes = new ArrayList<>();

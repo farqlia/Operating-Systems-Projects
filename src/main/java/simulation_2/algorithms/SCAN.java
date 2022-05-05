@@ -2,14 +2,16 @@ package simulation_2.algorithms;
 
 import java.util.*;
 
-public class SCAN extends AbstractScheduler{
+public class SCAN extends Scheduler {
 
     private List<Request> requests;
     private ScanBase scanner;
+    int discSize;
 
     public SCAN(int discSize){
         this.requests = new LinkedList<>();
-        this.scanner = new ScanBase(this, discSize);
+        this.scanner = new ScanBase(this);
+        this.discSize = discSize;
     }
 
     @Override
@@ -19,6 +21,8 @@ public class SCAN extends AbstractScheduler{
 
     @Override
     public Optional<Request> nextRequest() {
+        if (getPosition() == 0) scanner.setDirection(Direction.RIGHT);
+        else if (getPosition() == discSize) scanner.setDirection(Direction.LEFT);
         return scanner.nextRequest();
     }
 

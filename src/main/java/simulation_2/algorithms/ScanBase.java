@@ -3,37 +3,21 @@ package simulation_2.algorithms;
 import java.util.Collection;
 import java.util.Optional;
 
-public class ScanBase extends AbstractScheduler{
+public class ScanBase extends Scheduler {
 
-    private AbstractScheduler scheduler;
-    private int discSize;
+    private Scheduler scheduler;
     private Direction direction;
 
-    public ScanBase(AbstractScheduler scheduler,
-                    int discSize){
+    public ScanBase(Scheduler scheduler){
         this.scheduler = scheduler;
-        this.discSize = discSize;
         this.direction = Direction.RIGHT;
-    }
-
-    public void reposition(){
-        if (scheduler.getPosition() <= 0){
-            direction = Direction.RIGHT;
-        } else if (scheduler.getPosition() > discSize){
-            direction = Direction.LEFT;
-        }
     }
 
     public void setDirection(Direction direction){
         this.direction = direction;
     }
 
-    public Direction getDirection(){
-        return direction;
-    }
-
     public void move(){
-        reposition();
         direction.move(scheduler);
     }
 

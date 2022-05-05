@@ -2,21 +2,20 @@ package simulation_2.strategies;
 
 import simulation_2.algorithms.PrintStatistics;
 import simulation_2.algorithms.Request;
-import simulation_2.algorithms.AbstractScheduler;
+import simulation_2.algorithms.Scheduler;
 
 import java.util.Collection;
-import java.util.Optional;
 
-public abstract class StrategyRT extends AbstractScheduler {
+public abstract class StrategyRT extends Scheduler {
 
     // Handles the logic of processing real-time
     // requests
     // Is empty if there is no real-time
     // request in the queue
-    protected AbstractScheduler scheduler;
+    protected Scheduler scheduler;
     private int numOfRejectedRequests;
 
-    public StrategyRT(AbstractScheduler scheduler){
+    public StrategyRT(Scheduler scheduler){
         this.scheduler = scheduler;
         this.numOfRejectedRequests = 0;
     }

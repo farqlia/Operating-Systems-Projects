@@ -4,16 +4,16 @@ import java.util.function.Consumer;
 
 public enum Direction {
 
-    LEFT(AbstractScheduler::decPosition),
-    RIGHT(AbstractScheduler::incPosition),
+    LEFT(Scheduler::decPosition),
+    RIGHT(Scheduler::incPosition),
     JUMP_TO_0(s -> s.moveTo(0));
 
-    private final Consumer<AbstractScheduler> move;
-    Direction(Consumer<AbstractScheduler> move) {
+    private final Consumer<Scheduler> move;
+    Direction(Consumer<Scheduler> move) {
         this.move = move;
     }
 
-    public void move(AbstractScheduler scheduler){
+    public void move(Scheduler scheduler){
         move.accept(scheduler);
     }
 

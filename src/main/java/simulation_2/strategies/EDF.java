@@ -1,6 +1,6 @@
 package simulation_2.strategies;
 
-import simulation_2.algorithms.AbstractScheduler;
+import simulation_2.algorithms.Scheduler;
 import simulation_2.algorithms.PrintStatistics;
 import simulation_2.algorithms.Request;
 import java.util.Iterator;
@@ -12,7 +12,7 @@ public class EDF extends StrategyRT{
 
     private Request request;
 
-    public EDF(AbstractScheduler abstractScheduler) {
+    public EDF(Scheduler abstractScheduler) {
         super(abstractScheduler);
     }
 

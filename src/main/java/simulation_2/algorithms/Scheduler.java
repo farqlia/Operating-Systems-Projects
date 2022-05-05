@@ -1,10 +1,9 @@
 package simulation_2.algorithms;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractScheduler {
+public abstract class Scheduler {
 
     // Current position of the cylinder head
     private int position = 0;

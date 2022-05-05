@@ -2,7 +2,7 @@ package simulation_2.algorithms;
 
 import java.util.*;
 
-public class SSTF extends AbstractScheduler {
+public class SSTF extends Scheduler {
 
     private final List<Request> requests;
     private Request currRequest;
@@ -13,7 +13,7 @@ public class SSTF extends AbstractScheduler {
 
     @Override
     public void refresh(){
-        currRequest = getNearestRequest();
+        currRequest = null;
     }
 
     @Override
@@ -25,8 +25,9 @@ public class SSTF extends AbstractScheduler {
     public Optional<Request> nextRequest() {
         // Finds the next request to be served
         if (currRequest == null){
-            refresh();
-        } else {
+            currRequest = getNearestRequest();
+        }
+        if (currRequest != null){
             if (currRequest.getPosition() > getPosition()) incPosition();
             else if (currRequest.getPosition() < getPosition()) decPosition();
             else {
@@ -41,9 +42,8 @@ public class SSTF extends AbstractScheduler {
 
     private Request getNearestRequest(){
         Comparator<Request> comp = Comparator.comparing(r -> Math.abs(getPosition() - r.getPosition()));
-        // Element with the highest priority will be at the end
-        requests.sort(comp.reversed());
-        return requests.get(requests.size() - 1);
+        requests.sort(comp);
+        return requests.get(0);
     }
 
 

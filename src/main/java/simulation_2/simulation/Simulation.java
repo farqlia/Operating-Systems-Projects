@@ -2,29 +2,26 @@ package simulation_2.simulation;
 
 import simulation_2.algorithms.*;
 import simulation_2.processgenerating.*;
-import simulation_2.strategies.EDF;
-import simulation_2.strategies.FD_SCAN;
 
 import java.util.Iterator;
 
 public class Simulation implements Iterable<Request> {
 
     private final int discSize;
-    private final AbstractScheduler abstractScheduler;
+    private final Scheduler abstractScheduler;
     private final Disc disc;
 
-    private int initVal = 100;
-    private int numOfPR = (int)((0.1) * initVal);
-    private int totalRequests = initVal - numOfPR;
+    private int initVal = 100000;
+    private int numOfPR = (int)((0.001) * initVal);
 
     private int[] posGaussDistMean = {190, 50, 100, 10};
-    private double[] deadlineGaussDistMean = {5, 1, 0.5, 0.3};
+    private double[] deadlineGaussDistMean = {5};
 
     private final boolean generatePR;
 
     private final Generator generator;
 
-    public Simulation(AbstractScheduler scheduler, int discSize, boolean generatePR){
+    public Simulation(Scheduler scheduler, int discSize, boolean generatePR){
         this.discSize = discSize;
         this.generatePR = generatePR;
         this.abstractScheduler = scheduler;
@@ -35,11 +32,17 @@ public class Simulation implements Iterable<Request> {
     public int getDiscSize(){return discSize;}
     public int getTotalHeadMoves(){return disc.getNumOfHeadMoves();}
 
+    private void init(){
+        while (generator.getNumberOfGenerated() < 10){
+            randomlyAddNewRequest();
+        }
+    }
+
     public void run(){
-        do {
+        init();
+        while (abstractScheduler.hasRequests()){
             process();
         }
-        while (abstractScheduler.hasRequests());
     }
 
     public void printStatistics(){

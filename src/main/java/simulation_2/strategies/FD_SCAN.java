@@ -1,6 +1,6 @@
 package simulation_2.strategies;
 
-import simulation_2.algorithms.AbstractScheduler;
+import simulation_2.algorithms.Scheduler;
 import simulation_2.algorithms.Direction;
 import simulation_2.algorithms.Request;
 import simulation_2.algorithms.ScanBase;
@@ -14,9 +14,9 @@ public class FD_SCAN extends StrategyRT {
     private ScanBase scanner;
     private Request request;
 
-    public FD_SCAN(AbstractScheduler abstractScheduler, int discSize) {
+    public FD_SCAN(Scheduler abstractScheduler, int discSize) {
         super(abstractScheduler);
-        this.scanner = new ScanBase(abstractScheduler, discSize);
+        this.scanner = new ScanBase(abstractScheduler);
     }
 
     private void findNextAndRemoveNotFeasible(){

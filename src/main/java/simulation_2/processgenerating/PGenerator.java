@@ -23,9 +23,9 @@ public class PGenerator implements Generator{
     private int numOfGeneratedR;
 
     private double currentChance = -0.005;
-    private final int threshold = 10;
+    private final int threshold = 30;
 
-    private final double priorityRequestsThreshold = 0.15;
+    private final double priorityRequestsThreshold = 0.1;
     private final double deadlineMeanThreshold = 0.4;
     private boolean generatePR;
     private int numOfPR;
@@ -78,12 +78,12 @@ public class PGenerator implements Generator{
 
     private boolean shouldGeneratePriorityRequest(){
         return generatePR && (((PRIORITY_GENERATOR.nextFloat() < priorityRequestsThreshold)
-                && (numOfGeneratedPR < numOfPR)));
+                && (numOfGeneratedPR < numOfPR)) || isLow());
     }
 
     private boolean shouldGenerateRequest(){
-        return numOfGeneratedR < numOfR && (((numOfGeneratedR + numOfGeneratedPR) - disc.getNumOfRequests()) / (double) threshold <= ACCESS_GENERATOR.nextFloat() + currentChance||
-                (numOfGeneratedR + numOfGeneratedPR) - disc.getNumOfRequests() <= 1);
+        return ((numOfGeneratedR + numOfGeneratedPR) < (numOfR + numOfPR)) && (((numOfGeneratedR + numOfGeneratedPR) - disc.getNumOfRequests()) / (double) threshold <= ACCESS_GENERATOR.nextFloat() + currentChance||
+                isLow());
     }
 
 
@@ -102,14 +102,19 @@ public class PGenerator implements Generator{
         return new Request(position, disc.getNumOfHeadMoves(), 0);
     }
 
+    private boolean isLow(){
+        return (numOfGeneratedR + numOfGeneratedPR) - disc.getNumOfRequests() <= 2;
+    }
+
+
     @Override
     public Request next() {
         currentChance *= (-1);
-        if (shouldGenerateRequest()){
-            if (generatePR && shouldGeneratePriorityRequest()) return generatePriorityRequest();
-            else return generateRequest();
-        }
-        else return null;
+        if (hasNext()){
+            if (shouldGenerateRequest()) return generateRequest();
+            else if (shouldGeneratePriorityRequest()) return generatePriorityRequest();
+            else return null;
+        } else return null;
     }
 
     @Override
