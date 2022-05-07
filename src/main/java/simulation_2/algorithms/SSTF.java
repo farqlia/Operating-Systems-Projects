@@ -43,7 +43,7 @@ public class SSTF extends Scheduler {
     private Request getNearestRequest(){
         Comparator<Request> comp = Comparator.comparing(r -> Math.abs(getPosition() - r.getPosition()));
         requests.sort(comp);
-        return requests.get(0);
+        return requests.isEmpty() ? null : requests.get(0);
     }
 
 

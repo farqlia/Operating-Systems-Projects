@@ -19,16 +19,17 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         main.run();
+        System.out.println();
         main.runEDFs();
         System.out.println();
         main.runFD_SCANs();
     }
 
     private void run(){
-        run(new FCFS(), true, "FCFS");
-        run(new SSTF(), true, "SSTF");
-        run(new SCAN(discSize), true,"SCAN");
-        run(new C_SCAN(discSize), true,"C_SCAN");
+        run(new FCFS(), false, "FCFS");
+        run(new SSTF(), false, "SSTF");
+        run(new SCAN(discSize), false,"SCAN");
+        run(new C_SCAN(discSize), false,"C_SCAN");
     }
 
     private void runEDFs(){

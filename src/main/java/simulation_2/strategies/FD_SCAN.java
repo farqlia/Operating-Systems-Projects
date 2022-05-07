@@ -1,9 +1,6 @@
 package simulation_2.strategies;
 
-import simulation_2.algorithms.Scheduler;
-import simulation_2.algorithms.Direction;
-import simulation_2.algorithms.Request;
-import simulation_2.algorithms.ScanBase;
+import simulation_2.algorithms.*;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -17,6 +14,18 @@ public class FD_SCAN extends StrategyRT {
     public FD_SCAN(Scheduler abstractScheduler, int discSize) {
         super(abstractScheduler);
         this.scanner = new ScanBase(abstractScheduler);
+    }
+
+    private void removeNotFeasible(){
+        Request r;
+        Iterator<Request> iter = scheduler.getAllRequests().iterator();
+        while (iter.hasNext()){
+            r = iter.next();
+            if (r.isPriorityRequest() && Math.abs(r.getPosition() - getPosition()) > r.getCurrDeadline()){
+                iter.remove();
+                setRequestAsRejected(r);
+            }
+        }
     }
 
     private void findNextAndRemoveNotFeasible(){
@@ -56,17 +65,20 @@ public class FD_SCAN extends StrategyRT {
 
         if (request == null){
             findNextAndRemoveNotFeasible();
-            if (request != null){
-                //System.out.println("[SWITCHED TO FD-SCAN][HEAD] " + getPosition());
+            if (request != null && PrintStatistics.print){
+                System.out.println("[SWITCHED TO FD-SCAN][HEAD] " + getPosition());
             }
         }
+
+        decrementDeadlines();
+        removeNotFeasible();
 
         if (request != null){
 
             setDirection();
             Optional<Request> optR = scanner.nextRequest();
 
-            decrementDeadlines();
+
             return optR;
         } else {
             // Call the normal algorithm

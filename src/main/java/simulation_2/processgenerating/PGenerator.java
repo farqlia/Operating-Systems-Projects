@@ -4,6 +4,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.Well19937c;
 import simulation_2.algorithms.Disc;
 import simulation_2.algorithms.Request;
+import simulation_2.algorithms.Time;
 
 public class PGenerator implements Generator{
 
@@ -19,13 +20,17 @@ public class PGenerator implements Generator{
     private final RandomGenerator MEAN_DEADLINE_CHANGE_GENERATOR = new Well19937c(10);
     private final RandomGenerator MEAN_DEADLINE_GENERATOR = new Well19937c(11);
 
+    private final RandomGenerator GENERATE_REQUEST = new Well19937c(12);
+
     private int numOfR;
     private int numOfGeneratedR;
 
-    private double currentChance = -0.005;
-    private final int threshold = 30;
+    private double currentChance = -0.01;
+    private double threshold = 1.5;
+    private final double THRESHOLD = 1.5;
 
-    private final double priorityRequestsThreshold = 0.1;
+    private double pRThreshold = 1.7;
+    private final double THRESHOLD_PR = 1.7;
     private final double deadlineMeanThreshold = 0.4;
     private boolean generatePR;
     private int numOfPR;
@@ -41,6 +46,7 @@ public class PGenerator implements Generator{
     private final double sigma = Math.sqrt(0.2);
     private final double gaussMeanSwitchThreshold = 0.2;
 
+    private int incr = 0;
     // POSITION\
 
     public PGenerator(Disc disc, int numOfR, boolean generatePR, int numOfPR, double gaussDistMeansD[], int[] gaussDistMeansP){
@@ -60,8 +66,8 @@ public class PGenerator implements Generator{
     }
 
     private int calculateGaussianPosition(){
-        return (int)Math.min(disc.size(), Math.abs((GAUSS_POSITION_GENERATOR.nextGaussian() / (double)gaussDistMeansP.length * sigma
-                + gaussDistMeansP[currentMeanP] * .01) * 100));
+        return (int)Math.min(disc.size(), Math.abs((GAUSS_POSITION_GENERATOR.nextGaussian() * sigma * (0.1 * disc.size())
+                + gaussDistMeansP[currentMeanP])));
     }
 
     private int getGaussRequestPosition(){
@@ -77,13 +83,20 @@ public class PGenerator implements Generator{
     }
 
     private boolean shouldGeneratePriorityRequest(){
-        return generatePR && (((PRIORITY_GENERATOR.nextFloat() < priorityRequestsThreshold)
-                && (numOfGeneratedPR < numOfPR)) || isLow());
+        pRThreshold += (1 / (double)(1 + getNumberOfGenerated() * disc.size()));
+        if (pRThreshold >= 2.5) pRThreshold = THRESHOLD_PR;
+        return generatePR && (((pRThreshold < PRIORITY_GENERATOR.nextGaussian())
+                && (numOfGeneratedPR < numOfPR)));
     }
 
     private boolean shouldGenerateRequest(){
-        return ((numOfGeneratedR + numOfGeneratedPR) < (numOfR + numOfPR)) && (((numOfGeneratedR + numOfGeneratedPR) - disc.getNumOfRequests()) / (double) threshold <= ACCESS_GENERATOR.nextFloat() + currentChance||
-                isLow());
+        //if (incr / disc.size() >= 2) incr = 0;
+        //threshold += (1 / (double)(numOfR + numOfPR));
+        //if (threshold >= 2) threshold = 1.5;
+        threshold += (1 / (double)(1 + getNumberOfGenerated() * disc.size()));
+        if (threshold >= 2) threshold = THRESHOLD;
+        return (numOfGeneratedR < numOfR) && ((threshold
+                <= (ACCESS_GENERATOR.nextGaussian()) + currentChance));
     }
 
 
@@ -91,19 +104,17 @@ public class PGenerator implements Generator{
         changeCurrentMeanD();
         int position = getGaussRequestPosition();
         int deadline = Math.max(minDeadline, (int)(Math.abs((PRIORITY_DEADLINE_GENERATOR.nextGaussian()) * Math.sqrt(gaussDistMeansD[currentMeanD]))
-                * Math.abs(position - disc.getHeadPosition())));
+                * disc.size()));
         numOfGeneratedPR++;
-        return new Request(position, disc.getNumOfHeadMoves(), deadline);
+        incr += position;
+        return new Request(position, Time.t, deadline);
     }
 
     private Request generateRequest(){
         int position = getGaussRequestPosition();
         numOfGeneratedR++;
-        return new Request(position, disc.getNumOfHeadMoves(), 0);
-    }
-
-    private boolean isLow(){
-        return (numOfGeneratedR + numOfGeneratedPR) - disc.getNumOfRequests() <= 2;
+        incr += position;
+        return new Request(position, Time.t, 0);
     }
 
 

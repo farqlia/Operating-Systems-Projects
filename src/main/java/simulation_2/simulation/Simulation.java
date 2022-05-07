@@ -11,11 +11,11 @@ public class Simulation implements Iterable<Request> {
     private final Scheduler abstractScheduler;
     private final Disc disc;
 
-    private int initVal = 100000;
-    private int numOfPR = (int)((0.001) * initVal);
+    private int numOfR = 10000;
+    private int numOfPR = (int)((0.01) * numOfR);
 
-    private int[] posGaussDistMean = {190, 50, 100, 10};
-    private double[] deadlineGaussDistMean = {5};
+    private int[] posGaussDistMean = {10, 190};
+    private double[] deadlineGaussDistMean = {5, 0.2, 3, 0.1};
 
     private final boolean generatePR;
 
@@ -26,23 +26,18 @@ public class Simulation implements Iterable<Request> {
         this.generatePR = generatePR;
         this.abstractScheduler = scheduler;
         this.disc = new Disc(abstractScheduler, discSize);
-        this.generator = new PGenerator(disc, initVal, generatePR, numOfPR, deadlineGaussDistMean, posGaussDistMean);
+        this.generator = new PGenerator(disc, numOfR, generatePR, numOfPR, deadlineGaussDistMean, posGaussDistMean);
     }
 
     public int getDiscSize(){return discSize;}
     public int getTotalHeadMoves(){return disc.getNumOfHeadMoves();}
 
-    private void init(){
-        while (generator.getNumberOfGenerated() < 10){
-            randomlyAddNewRequest();
-        }
-    }
-
     public void run(){
-        init();
-        while (abstractScheduler.hasRequests()){
+         do {
             process();
-        }
+            Time.t++;
+        } while (disc.getNumOfRequests() != (numOfR + (generatePR ? numOfPR : 0)));
+         Time.t = 0;
     }
 
     public void printStatistics(){
@@ -52,6 +47,7 @@ public class Simulation implements Iterable<Request> {
         int numOfPR = (disc.getNumOfProcessedPR() + abstractScheduler.getNumOfRejectedRequests());
 
         System.out.println("TOTAL CYLINDER MOVES : " + disc.getNumOfHeadMoves());
+        System.out.printf("TOTAL RELATIVE CYLINDER MOVES : %.2f\n", (disc.getNumOfHeadMoves() / (double) disc.size()));
         System.out.println("NUMBER OF REQUESTS : " + (disc.getNumOfRequests()));
         System.out.println("NUMBER OF REALIZED REQUESTS : " + (disc.getNumOfRealizedRequests()));
         if (generatePR){
@@ -83,15 +79,17 @@ public class Simulation implements Iterable<Request> {
             if (r != null) {
                 abstractScheduler.addRequest(r);
                 if (PrintStatistics.print) System.out.println("[GENERATED] : " + r);
-                //System.out.println("[TOTAL GENERATED] : " + generator.);
             }
         }
     }
 
     private void process(){
         randomlyAddNewRequest();
-        disc.process();
-        if (PrintStatistics.print) printInfoAboutRequest();
+        if (abstractScheduler.hasRequests()) {
+            disc.process();
+            if (PrintStatistics.print) printInfoAboutRequest();
+        }
+
     }
 
 

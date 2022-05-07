@@ -29,7 +29,7 @@ public class Disc {
 
         if (request.isPresent()){
 
-            waitingTimes.add(numOfHeadMoves - request.get().getArrTime());
+            waitingTimes.add(Time.t - request.get().getArrTime());
             if (request.get().isPriorityRequest()){
                 numOfPriorityRequest++;
             }
@@ -40,14 +40,18 @@ public class Disc {
             if (PrintStatistics.print){
                 scheduler.getAllRequests().forEach(x -> System.out.print(x.getPosition() + " "));
                 System.out.println();
+
+
             }
         } else {
             currRequest = null;
         }
-
-        numOfHeadMoves += (prevPosition == scheduler.getPosition() ? 0 : 1);
-        prevPosition = scheduler.getPosition();
-
+        if (currRequest != null){
+            if (prevPosition != currRequest.getPosition()) numOfHeadMoves++;
+            prevPosition = currRequest.getPosition();
+        } else {
+            numOfHeadMoves++;
+        }
     }
 
     public Request getCurrRequest() {
