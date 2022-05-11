@@ -44,11 +44,10 @@ public class Main {
     private void runFD_SCANs(){
         System.out.println("-------- FD_SCANs ------------");
         boolean gPR = true;
-
-        run(new FD_SCAN(new FCFS(), discSize), gPR, "FCFS");
-        run(new FD_SCAN(new SSTF(), discSize), gPR, "SSTF");
-        run(new FD_SCAN(new SCAN(discSize), discSize), gPR,"SCAN");
-        run(new FD_SCAN(new C_SCAN(discSize), discSize), gPR,"C_SCAN");
+        run(new FD_SCAN(new FCFS()), gPR, "FCFS");
+        run(new FD_SCAN(new SSTF()), gPR, "SSTF");
+        run(new FD_SCAN(new SCAN(discSize)), gPR,"SCAN");
+        run(new FD_SCAN(new C_SCAN(discSize)), gPR,"C_SCAN");
     }
 
 }

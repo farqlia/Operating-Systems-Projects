@@ -20,10 +20,6 @@ public abstract class StrategyRT extends Scheduler {
         this.numOfRejectedRequests = 0;
     }
 
-    //protected abstract Optional<Request> nextPriorityRequest();
-
-    //protected abstract Request getRequest();
-
     protected void decrementDeadlines(){
         scheduler.getAllRequests().stream().filter(Request::isPriorityRequest)
                 .forEach(Request::decrementDeadline);

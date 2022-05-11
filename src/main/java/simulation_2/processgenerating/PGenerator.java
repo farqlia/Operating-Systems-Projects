@@ -26,8 +26,8 @@ public class PGenerator implements Generator{
     private int numOfGeneratedR;
 
     private double currentChance = -0.01;
-    private double threshold = 1.5;
     private final double THRESHOLD = 1.5;
+    private double threshold = 1.5;
 
     private double pRThreshold = 1.7;
     private final double THRESHOLD_PR = 1.7;
@@ -45,9 +45,6 @@ public class PGenerator implements Generator{
     private int currentMeanP;
     private final double sigma = Math.sqrt(0.2);
     private final double gaussMeanSwitchThreshold = 0.2;
-
-    private int incr = 0;
-    // POSITION\
 
     public PGenerator(Disc disc, int numOfR, boolean generatePR, int numOfPR, double gaussDistMeansD[], int[] gaussDistMeansP){
         this.disc = disc;
@@ -93,8 +90,10 @@ public class PGenerator implements Generator{
         //if (incr / disc.size() >= 2) incr = 0;
         //threshold += (1 / (double)(numOfR + numOfPR));
         //if (threshold >= 2) threshold = 1.5;
-        threshold += (1 / (double)(1 + getNumberOfGenerated() * disc.size()));
-        if (threshold >= 2) threshold = THRESHOLD;
+        // 100
+        int div = getNumberOfGenerated() * disc.size();
+        threshold += (1 / (double)(div));
+        if (threshold >= 3) threshold = THRESHOLD;
         return (numOfGeneratedR < numOfR) && ((threshold
                 <= (ACCESS_GENERATOR.nextGaussian()) + currentChance));
     }
@@ -106,14 +105,12 @@ public class PGenerator implements Generator{
         int deadline = Math.max(minDeadline, (int)(Math.abs((PRIORITY_DEADLINE_GENERATOR.nextGaussian()) * Math.sqrt(gaussDistMeansD[currentMeanD]))
                 * disc.size()));
         numOfGeneratedPR++;
-        incr += position;
         return new Request(position, Time.t, deadline);
     }
 
     private Request generateRequest(){
         int position = getGaussRequestPosition();
         numOfGeneratedR++;
-        incr += position;
         return new Request(position, Time.t, 0);
     }
 

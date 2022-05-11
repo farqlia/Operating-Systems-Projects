@@ -21,6 +21,18 @@ public class EDF extends StrategyRT{
         return Optional.of(request);
     }
 
+    private void removeMissed(){
+        Request r = null;
+        Iterator<Request> iter = scheduler.getAllRequests().iterator();
+        while (iter.hasNext()){
+            r = iter.next();
+            if (r.isPriorityRequest() && r.getCurrDeadline() < 0){
+                iter.remove();
+                setRequestAsRejected(r);
+            }
+        }
+    }
+
     private void findNextAndRemoveNotFeasible(){
         Request r = null;
         int minDeadline = Integer.MAX_VALUE;
@@ -28,7 +40,7 @@ public class EDF extends StrategyRT{
         while (iter.hasNext()){
             r = iter.next();
             if (r.isPriorityRequest()){
-                if (r.getCurrDeadline() <= 0 && r.getPosition() != scheduler.getPosition()){
+                if (r.getCurrDeadline() < 0 || (r.getCurrDeadline() == 0 && r.getPosition() != scheduler.getPosition())){
                 // We have to remove all the requests which deadlines are missed
                 iter.remove();
                 setRequestAsRejected(r);
@@ -73,6 +85,8 @@ public class EDF extends StrategyRT{
             if (request.getCurrDeadline() == 0){
                 setRequestAsRejected(request);
             }
+
+            removeMissed();
 
         } else {
             // Call the normal algorithm

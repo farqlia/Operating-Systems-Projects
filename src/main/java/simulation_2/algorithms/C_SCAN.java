@@ -23,7 +23,7 @@ public class C_SCAN extends Scheduler {
     }
 
     private void resetPositionIfNeeded(){
-        if (getPosition() == discSize){
+        if (getPosition() >= discSize){
             scanner.setDirection(Direction.JUMP_TO_0);
         }
         else scanner.setDirection(Direction.RIGHT);

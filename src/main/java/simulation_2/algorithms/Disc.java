@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public class Disc {
 
-    private final List<Integer> waitingTimes;
+    private final List<Long> waitingTimes;
     private final Scheduler scheduler;
     private final int size;
 
@@ -29,7 +29,7 @@ public class Disc {
 
         if (request.isPresent()){
 
-            waitingTimes.add(Time.t - request.get().getArrTime());
+            waitingTimes.add((long)(Time.t - request.get().getArrTime()));
             if (request.get().isPriorityRequest()){
                 numOfPriorityRequest++;
             }
@@ -64,7 +64,7 @@ public class Disc {
         return numOfHeadMoves;
     }
 
-    public List<Integer> getWaitingTimes() {
+    public List<Long> getWaitingTimes() {
         return waitingTimes;
     }
 

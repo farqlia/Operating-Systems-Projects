@@ -12,10 +12,10 @@ public class Simulation implements Iterable<Request> {
     private final Disc disc;
 
     private int numOfR = 10000;
-    private int numOfPR = (int)((0.01) * numOfR);
+    private int numOfPR = (int)((0.2) * numOfR);
 
-    private int[] posGaussDistMean = {10, 190};
-    private double[] deadlineGaussDistMean = {5, 0.2, 3, 0.1};
+    private int[] posGaussDistMean = {100, 110, 20, 30, 190};
+    private double[] deadlineGaussDistMean = {5, 0.3, 0.2, 1, 2};
 
     private final boolean generatePR;
 
@@ -42,8 +42,9 @@ public class Simulation implements Iterable<Request> {
 
     public void printStatistics(){
 
-        double avgWaitingTime = ((double)disc.getWaitingTimes().stream().reduce(Integer::sum).orElse(0) / disc.getNumOfRealizedRequests());
-        double maxWaitingTime = (double)disc.getWaitingTimes().stream().max(Integer::compareTo).orElse(0);
+        double avgWaitingTime = ((long)disc.getWaitingTimes().stream().reduce(Long::sum).orElse((long)0) / (double)disc.getNumOfRealizedRequests());
+
+        double maxWaitingTime = (double)disc.getWaitingTimes().stream().max(Long::compareTo).orElse((long)0);
         int numOfPR = (disc.getNumOfProcessedPR() + abstractScheduler.getNumOfRejectedRequests());
 
         System.out.println("TOTAL CYLINDER MOVES : " + disc.getNumOfHeadMoves());
@@ -78,7 +79,10 @@ public class Simulation implements Iterable<Request> {
             Request r = generator.next();
             if (r != null) {
                 abstractScheduler.addRequest(r);
-                if (PrintStatistics.print) System.out.println("[GENERATED] : " + r);
+                if (PrintStatistics.print) {
+                    System.out.println("[GENERATED] : " + r);
+                    System.out.println("[NUM OF GENERATED] : " + generator.getNumberOfGenerated());
+                }
             }
         }
     }

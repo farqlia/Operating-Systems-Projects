@@ -11,7 +11,7 @@ public class FD_SCAN extends StrategyRT {
     private ScanBase scanner;
     private Request request;
 
-    public FD_SCAN(Scheduler abstractScheduler, int discSize) {
+    public FD_SCAN(Scheduler abstractScheduler) {
         super(abstractScheduler);
         this.scanner = new ScanBase(abstractScheduler);
     }
@@ -77,7 +77,6 @@ public class FD_SCAN extends StrategyRT {
 
             setDirection();
             Optional<Request> optR = scanner.nextRequest();
-
 
             return optR;
         } else {
