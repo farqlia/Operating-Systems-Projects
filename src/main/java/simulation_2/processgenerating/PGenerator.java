@@ -20,14 +20,16 @@ public class PGenerator implements Generator{
     private final RandomGenerator MEAN_DEADLINE_CHANGE_GENERATOR = new Well19937c(10);
     private final RandomGenerator MEAN_DEADLINE_GENERATOR = new Well19937c(11);
 
-    private final RandomGenerator GENERATE_REQUEST = new Well19937c(12);
+    //private final RandomGenerator GENERATE_REQUEST = new Well19937c(12);
 
     private int numOfR;
     private int numOfGeneratedR;
 
+    private int div = 10;
+
     private double currentChance = -0.01;
-    private final double THRESHOLD = 1.5;
-    private double threshold = 1.5;
+    private final double THRESHOLD = 1.7;
+    private double threshold = 1.7;
 
     private double pRThreshold = 1.7;
     private final double THRESHOLD_PR = 1.7;
@@ -79,26 +81,41 @@ public class PGenerator implements Generator{
         }
     }
 
+
     private boolean shouldGeneratePriorityRequest(){
-        pRThreshold += (1 / (double)(1 + getNumberOfGenerated() * disc.size()));
-        if (pRThreshold >= 2.5) pRThreshold = THRESHOLD_PR;
-        return generatePR && (((pRThreshold < PRIORITY_GENERATOR.nextGaussian())
+        //div = (1 + getNumberOfGenerated());
+        pRThreshold += (1 / (double)(pRThreshold));
+        if (pRThreshold >= 2.0) pRThreshold = THRESHOLD_PR;
+        return generatePR && (((pRThreshold < PRIORITY_GENERATOR.nextGaussian() * Math.sqrt(0.9))
                 && (numOfGeneratedPR < numOfPR)));
     }
 
     private boolean shouldGenerateRequest(){
-        //if (incr / disc.size() >= 2) incr = 0;
-        //threshold += (1 / (double)(numOfR + numOfPR));
-        //if (threshold >= 2) threshold = 1.5;
-        // 100
-        int div = getNumberOfGenerated() * disc.size();
-        threshold += (1 / (double)(div));
-        if (threshold >= 3) threshold = THRESHOLD;
+        currentChance = (-1) * currentChance;
+        //div = (1 + getNumberOfGenerated());
+        threshold += (1 / (double)(threshold));
+        if (threshold >= 3.0) threshold = THRESHOLD;
         return (numOfGeneratedR < numOfR) && ((threshold
-                <= (ACCESS_GENERATOR.nextGaussian()) + currentChance));
+                <= (ACCESS_GENERATOR.nextGaussian() * Math.sqrt(0.9)) + currentChance));
     }
 
 
+/*
+    private boolean shouldGeneratePriorityRequest(){
+        pRThreshold -= (1 / (double)(div));
+        if (pRThreshold < 0) pRThreshold = THRESHOLD_PR;
+        return generatePR && (((pRThreshold > PRIORITY_GENERATOR.nextFloat())
+                && (numOfGeneratedPR < numOfPR)));
+    }
+
+    private boolean shouldGenerateRequest(){
+        currentChance = (-1) * currentChance;
+        threshold -= (1 / (double)(div));
+        if (threshold < 0) threshold = THRESHOLD;
+        return (numOfGeneratedR < numOfR) && ((threshold
+                > (ACCESS_GENERATOR.nextFloat()) + currentChance));
+    }
+ */
     private Request generatePriorityRequest(){
         changeCurrentMeanD();
         int position = getGaussRequestPosition();

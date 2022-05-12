@@ -12,10 +12,11 @@ public class Simulation implements Iterable<Request> {
     private final Disc disc;
 
     private int numOfR = 10000;
-    private int numOfPR = (int)((0.2) * numOfR);
+    private int numOfPR = 1000;
 
-    private int[] posGaussDistMean = {100, 110, 20, 30, 190};
-    private double[] deadlineGaussDistMean = {5, 0.3, 0.2, 1, 2};
+    // {100, 110, 20, 30, 190};
+    // {100, 100, 100, 1, 100}
+    // {100, 50, 190, 10};
 
     private final boolean generatePR;
 
@@ -26,7 +27,19 @@ public class Simulation implements Iterable<Request> {
         this.generatePR = generatePR;
         this.abstractScheduler = scheduler;
         this.disc = new Disc(abstractScheduler, discSize);
-        this.generator = new PGenerator(disc, numOfR, generatePR, numOfPR, deadlineGaussDistMean, posGaussDistMean);
+
+        //int[] posGaussDistMean = {(int)(0.1 * discSize), (int)(0.95 * discSize), (int)(0.95 * discSize), (int)(0.95 * discSize), (int)(0.95 * discSize)};
+
+        //int[] posGaussDistMean = {(int)(0.1 * discSize), (int)(0.5 * discSize),
+                //(int)(0.95 * discSize), (int)(0.6 * discSize), (int)(0.7 * discSize)};
+
+        int[] posGaussDistMean = {(int)(0.1 * discSize), (int)(0.95 * discSize), (int)(0.5 * discSize)};
+
+        //int[] posGaussDistMean = {200, 200, 200, 1, 200};
+        double[] deadlineGaussDistSigmas = {5, 0.3, 0.2, 1, 2};
+
+        this.generator = new PGenerator(disc, numOfR, generatePR, numOfPR, deadlineGaussDistSigmas, posGaussDistMean);
+
     }
 
     public int getDiscSize(){return discSize;}
