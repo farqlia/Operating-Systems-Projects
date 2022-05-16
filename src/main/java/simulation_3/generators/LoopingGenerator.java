@@ -29,6 +29,11 @@ public class LoopingGenerator implements Generator{
     }
 
     @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
     public int getPageRange() {
         return 20;
     }
@@ -58,10 +63,10 @@ public class LoopingGenerator implements Generator{
         public boolean hasPrevious() {return false;}
 
         @Override
-        public Integer previous() {return null;}
+        public Integer previous() {return pages.get(previousIndex());}
 
         @Override
-        public int previousIndex() {return 0;}
+        public int previousIndex() {return (i - 1 + pages.size()) % pages.size();}
 
         @Override
         public void remove() {}

@@ -11,4 +11,7 @@ public interface Generator {
     ListIterator<Integer> iterator();
 
     List<Integer> requests();
+
+    // number of requests to generate
+    int size();
 }

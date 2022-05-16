@@ -1,7 +1,7 @@
 package simulation_3;
 
 import simulation_3.generators.Generator;
-import simulation_3.replacement_algorithms.ReplacementAlgorithm;
+import simulation_3.replacement_algorithms.PagesManager;
 
 import java.util.*;
 
@@ -10,13 +10,26 @@ public class Process_ {
     Generator pageRequests;
     ListIterator<Integer> pageIter;
     List<Page> pages;
-    ReplacementAlgorithm replacementAlgorithm;
+    PagesManager replacementAlgorithm;
+
+    boolean isActive;
+    // frames belonging to the process
+    List<Integer> frames;
+    int nextFreeFrame;
+
+    private String name;
+    public static int numOfProcesses;
 
     public Process_(Generator pageRequests,
-                    ReplacementAlgorithm replacementAlgorithm){
+                    PagesManager replacementAlgorithm){
         this.pageRequests = pageRequests;
         this.pageIter = pageRequests.iterator();
         this.replacementAlgorithm = replacementAlgorithm;
+        this.replacementAlgorithm.setProcess(this);
+        this.isActive = true;
+        this.frames = new ArrayList<>();
+        this.name = "" + numOfProcesses++;
+        initPages();
     }
 
     public void initPages(){
@@ -28,6 +41,10 @@ public class Process_ {
 
     public Page nextPage(){
         return pages.get(pageIter.next());
+    }
+
+    public Page getPage(){
+        return pages.get(pageIter.previous());
     }
 
     public boolean hasNext(){
@@ -46,7 +63,39 @@ public class Process_ {
         return pages;
     }
 
-    public ReplacementAlgorithm getReplacementAlgorithm() {
+    public PagesManager getPagesManager() {
         return replacementAlgorithm;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public List<Integer> getFrames() {
+        return frames;
+    }
+
+    public int getNextFreeFrame(){
+        return (nextFreeFrame >= frames.size()) ? -1 : frames.get(nextFreeFrame++);
+    }
+
+    public boolean hasFreeFrame(){
+        return nextFreeFrame < frames.size();
+    }
+
+    public void setFrames(List<Integer> frames) {
+        this.frames = frames;
+    }
+
+    public int numOfRequests(){return pageRequests.size();}
+
+    @Override
+    public String toString(){
+        return "p" + name;
+    }
+
 }

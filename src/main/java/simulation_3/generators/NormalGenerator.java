@@ -1,6 +1,7 @@
 package simulation_3.generators;
 
 import org.apache.commons.math3.random.*;
+import simulation_3.PrintStatistics;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,14 +32,15 @@ public class NormalGenerator implements Generator{
     private List<Integer> pages = IntStream.range(0, pageNumbers)
             .boxed().collect(Collectors.toList());
 
-    private int size = 1000;
+    private int size;
 
     // How often randomness occur between intervals of local requests
-    private double randomInterrupt = 0.7;
+    private double randomInterrupt = 0.2;
 
     private List<Integer> pageRequests = new ArrayList<>(size);
 
-    public NormalGenerator(){
+    public NormalGenerator(int size){
+        this.size = size;
         init();
     }
 
@@ -49,7 +51,7 @@ public class NormalGenerator implements Generator{
 
     private void createRequests(){
         while (pageRequests.size() < size){
-            if (randomInterrupt < RANDOMNESS_GENERATOR.nextFloat()){
+            if (randomInterrupt > RANDOMNESS_GENERATOR.nextFloat()){
                 addRandom();
             } else {
                 addLocally(sets.get(SET_CHOICE.nextInt(sets.size())));
@@ -59,19 +61,19 @@ public class NormalGenerator implements Generator{
 
     private void addLocally(List<Integer> set){
         int intervalSize = LOCALITY_INTERVAL_GENERATOR.nextInt(lowDeltaT, highDeltaT);
-        System.out.println("[LOCAL INTERVAL]: ");
+        if (PrintStatistics.print) System.out.println("[LOCAL INTERVAL]: ");
         int page = set.get(PAGE_CHOICE_GENERATOR.nextInt(set.size()));
         for (int i = 0; (i < intervalSize) && (pageRequests.size() < size); i++){
-            System.out.print(page + " ");
+            if (PrintStatistics.print) System.out.print(page + " ");
             pageRequests.add(page);
             page = set.get(PAGE_CHOICE_GENERATOR.nextInt(set.size()));
         }
-        System.out.println();
+        if (PrintStatistics.print) System.out.println();
     }
 
     private void addRandom(){
         int rndPage = pages.get(RANDOMNESS_GENERATOR.nextInt(pages.size()));
-        System.out.println("[RANDOM PAGE]: " + rndPage);
+        if (PrintStatistics.print) System.out.println("[RANDOM PAGE]: " + rndPage);
         pageRequests.add(rndPage);
     }
 
@@ -115,6 +117,11 @@ public class NormalGenerator implements Generator{
     }
 
     @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
     public int getPageRange() {
         return pageNumbers;
     }
@@ -146,20 +153,16 @@ public class NormalGenerator implements Generator{
 
         @Override
         public Integer previous() {
-            return null;
+            return pageRequests.get(previousIndex());
         }
-
-
 
         @Override
         public int previousIndex() {
-            return 0;
+            return counter - 1;
         }
 
         @Override
-        public void remove() {
-
-        }
+        public void remove() {}
 
         @Override
         public void set(Integer integer) {

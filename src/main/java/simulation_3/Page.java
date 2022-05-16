@@ -8,6 +8,15 @@ public class Page {
     private int frame = -1;
     private int referenceTime;
     private int arrivalTime;
+    boolean referenceBit;
+
+    public boolean getReferenceBit() {
+        return referenceBit;
+    }
+
+    public void setReferenceBit(boolean referenceBit) {
+        this.referenceBit = referenceBit;
+    }
 
     public Page(int num) {
         this.num = num;
@@ -43,5 +52,15 @@ public class Page {
 
     public void setArrivalTime(int arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Page{" +
+                "num=" + num +
+                ", frame=" + frame +
+                ", referenceTime=" + referenceTime +
+                ", arrivalTime=" + arrivalTime +
+                '}';
     }
 }
