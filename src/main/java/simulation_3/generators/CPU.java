@@ -30,9 +30,9 @@ public class CPU {
         frameManager.allocateFrame(process);
         // Frame allocator may decide to stop the process
         if (process.isActive()){
+            page.setReferenceBit(true);
             process.getPagesManager().allocatePage();
             memory[page.getFrame()] = page;
-            page.setReferenceBit(true);
             if (PrintStatistics.print) printMemory();
         } else {
             activeProcesses.remove(process);

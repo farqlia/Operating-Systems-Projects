@@ -21,7 +21,6 @@ public class APPROXIMATED_LRU extends PagesManager{
             addPageToQueue();
         }
         if (PrintStatistics.print) printQueue();
-        //rear = (rear + 1) % pages.size();
     };
 
     private void addPageToQueue(){
@@ -37,8 +36,9 @@ public class APPROXIMATED_LRU extends PagesManager{
                 break;
             } else {
                 process.getPages().get(pages.get(i)).setReferenceBit(false);
+                pages.add(pages.remove(i));
             }
-            i = (i + 1) % pages.size();
+            //i = (i + 1) % pages.size();
         }
 
         addPageToQueue();

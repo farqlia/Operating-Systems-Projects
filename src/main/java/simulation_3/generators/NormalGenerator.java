@@ -15,7 +15,7 @@ public class NormalGenerator implements Generator{
     private final RandomDataGenerator LOCALITY_INTERVAL_GENERATOR = new RandomDataGenerator(new Well512a(2));
 
     private final RandomGenerator RANDOMNESS_GENERATOR = new Well512a(5);
-    private final RandomGenerator PAGE_CHOICE_GENERATOR = new Well512a(6);
+    private final RandomGenerator PAGE_CHOICE_GENERATOR = new Well1024a(6);
 
 
     // 2-3 element sets
