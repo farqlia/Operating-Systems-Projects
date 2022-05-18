@@ -9,13 +9,14 @@ import java.util.stream.IntStream;
 
 public class LoopingGenerator implements Generator{
 
-    private final List<Integer> pages =
-            IntStream.range(0, 20).boxed().collect(Collectors.toList());
+    private final List<Integer> pages;
 
     private int size;
 
-    public LoopingGenerator(int size){
+    public LoopingGenerator(int size, int pageNumbers){
         this.size = size;
+        this.pages =
+                IntStream.range(0, pageNumbers).boxed().collect(Collectors.toList());
     }
 
     @Override

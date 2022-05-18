@@ -27,10 +27,9 @@ public class NormalGenerator implements Generator{
 
     // max difference between pages in one set
     private int delta = 2;
-    private int pageNumbers = 20;
+    private int pageNumbers;
 
-    private List<Integer> pages = IntStream.range(0, pageNumbers)
-            .boxed().collect(Collectors.toList());
+    private List<Integer> pages;
 
     private int size;
 
@@ -39,12 +38,15 @@ public class NormalGenerator implements Generator{
 
     private List<Integer> pageRequests = new ArrayList<>(size);
 
-    public NormalGenerator(int size){
+    public NormalGenerator(int size, int pageNumbers){
         this.size = size;
+        this.pageNumbers = pageNumbers;
         init();
     }
 
     public void init(){
+        this.pages = IntStream.range(0, pageNumbers)
+                .boxed().collect(Collectors.toList());
         fillLocalSets();
         createRequests();
     }
@@ -52,14 +54,14 @@ public class NormalGenerator implements Generator{
     private void createRequests(){
         while (pageRequests.size() < size){
             if (randomInterrupt > RANDOMNESS_GENERATOR.nextFloat()){
-                addRandom();
+                addPageRandomly();
             } else {
-                addLocally(sets.get(SET_CHOICE.nextInt(sets.size())));
+                addPagesLocally(sets.get(SET_CHOICE.nextInt(sets.size())));
             }
         }
     }
 
-    private void addLocally(List<Integer> set){
+    private void addPagesLocally(List<Integer> set){
         int intervalSize = LOCALITY_INTERVAL_GENERATOR.nextInt(lowDeltaT, highDeltaT);
         if (PrintStatistics.print) System.out.println("[LOCAL INTERVAL]: ");
         int page = set.get(PAGE_CHOICE_GENERATOR.nextInt(set.size()));
@@ -71,7 +73,7 @@ public class NormalGenerator implements Generator{
         if (PrintStatistics.print) System.out.println();
     }
 
-    private void addRandom(){
+    private void addPageRandomly(){
         int rndPage = pages.get(RANDOMNESS_GENERATOR.nextInt(pages.size()));
         if (PrintStatistics.print) System.out.println("[RANDOM PAGE]: " + rndPage);
         pageRequests.add(rndPage);

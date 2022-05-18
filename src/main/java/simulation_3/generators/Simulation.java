@@ -38,7 +38,7 @@ public class Simulation {
     public void printInfo(Process_ process){
 
         System.out.println("[MISS COUNT]: " + process.getPagesManager().getMissCount());
-        System.out.println("[HIT COUNT]: " + process.getPagesManager().getHitCount());
+        //System.out.println("[HIT COUNT]: " + process.getPagesManager().getHitCount());
         if (PrintStatistics.print){
             System.out.println("[REFERENCED PAGE]: " + process.getPage());
             if (process.getPagesManager().getEvictedPage() != null) {
