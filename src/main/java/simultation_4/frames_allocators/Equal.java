@@ -1,0 +1,43 @@
+package simultation_4.frames_allocators;
+
+import simulation_3.process.Process_;
+import simulation_3.process.State;
+
+import java.util.List;
+
+public class Equal extends FrameAllocator{
+
+    public Equal(List<Process_> activeProcesses, int numOfFrames) {
+        super(activeProcesses, numOfFrames);
+    }
+
+    public void initialize(){
+        distributeFrames((numOfFrames / activeProcesses.size()));
+    };
+
+    private void distributeFrames(int framesPerProcess){
+        for (Process_ process : activeProcesses) {
+            if (process.getState() == State.RUNNING){
+                for (int f = 0; f < framesPerProcess; f++){
+                    process.getFrameManager().addFrame(freeFrames.pollFirst());
+                }
+            }
+        }
+        // Share all the left frames equally between processes
+        // Maybe randomly add it?
+        for (int f = framesPerProcess * activeProcesses.size(), i=0; f < numOfFrames; f++, i++){
+            if (activeProcesses.get(i).getState() == State.RUNNING) activeProcesses.get(i).getFrameManager().addFrame(f);
+        }
+    }
+
+    @Override
+    public void allocateFrame(Process_ process) {
+        int framesPerProcess = freeFrames.size() / (int)activeProcesses.stream().filter(p -> p.getState() == State.RUNNING).count();
+        if (framesPerProcess != 0) distributeFrames(framesPerProcess);
+    }
+
+    @Override
+    public String toString() {
+        return "Equal";
+    }
+}

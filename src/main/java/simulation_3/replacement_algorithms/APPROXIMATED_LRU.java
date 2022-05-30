@@ -17,7 +17,7 @@ public class APPROXIMATED_LRU extends PagesManager{
     }
 
     public void hook(){
-        if (!process.getPage().isPresent() && process.hasFreeFrame()){
+        if (!process.getPage().isPresent() && process.getFrameManager().hasFreeFrame()){
             addPageToQueue();
         }
         if (PrintStatistics.print) printQueue();

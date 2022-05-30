@@ -1,8 +1,12 @@
 package simulation_3.replacement_algorithms;
 
-import simulation_3.Page;
-import simulation_3.Process_;
+import simulation_3.process.Page;
+import simulation_3.process.Process_;
 import simulation_3.Time;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class PagesManager {
 
@@ -11,9 +15,11 @@ public abstract class PagesManager {
     protected Process_ process;
     protected Page evictedPage;
     private String name;
+    private List<Integer> missCountHistory;
 
     public PagesManager(String name){
         this.name = name;
+        this.missCountHistory = new ArrayList<>();
     }
 
     protected abstract void evictPage();
@@ -28,13 +34,13 @@ public abstract class PagesManager {
 
         hook();
         if (!process.getPage().isPresent()){
-            if (!process.hasFreeFrame()){
+            if (!process.getFrameManager().hasFreeFrame()){
                 evictPage();
                 // Assign the free frame to the page
                 process.getPage().setFrame(getEvictedPage().getFrame());
                 getEvictedPage().setFrame(-1);
             } else {
-                process.getPage().setFrame(process.getNextFreeFrame());
+                process.getPage().setFrame(process.getFrameManager().getNextFreeFrame());
             }
             process.getPage().setArrivalTime(Time.get());
             missCount++;
@@ -42,9 +48,13 @@ public abstract class PagesManager {
             evictedPage = null;
             hitCount++;
         }
+        missCountHistory.add(missCount);
 
+    }
 
-    };
+    public int getPastMissCount(int delta){
+        return missCountHistory.get(missCountHistory.size() - 1 - delta);
+    }
 
     public void setProcess(Process_ process) {
         this.process = process;
@@ -57,6 +67,8 @@ public abstract class PagesManager {
     public int getHitCount() {
         return hitCount;
     }
+
+    public int getCount(){return hitCount + missCount;}
 
     @Override
     public String toString(){

@@ -1,6 +1,5 @@
 package simulation_3.replacement_algorithms;
 
-import simulation_3.Page;
 import simulation_3.PrintStatistics;
 
 import java.util.LinkedHashSet;
@@ -17,7 +16,7 @@ public class OPT extends PagesManager{
         int index = process.nextIndex();
         int lastAdded = 0;
         //index < process.numOfRequests() &&
-        while (pagesToBeReferenced.size() != process.getFrames().size()){
+        while (pagesToBeReferenced.size() != process.getFrameManager().numOfFrames()){
             lastAdded = process.pageRequests().get(index % process.pageRequests().size());
             // Page is a candidate for eviction only if it is present in the memory
             if (process.getPages().get(lastAdded).isPresent()){

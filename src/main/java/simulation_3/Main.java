@@ -1,6 +1,7 @@
 package simulation_3;
 
 import simulation_3.generators.*;
+import simulation_3.process.Process_;
 import simulation_3.replacement_algorithms.*;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class Main {
     public static void run(PagesManager pM, Generator g, int frames){
         System.out.println("-------------" + pM + "------------");
         List<Process_> processes = new ArrayList<>();
-        Process_ p1 = new Process_(g, pM);
+        Process_ p1 = new Process_(1, g, pM);
         processes.add(p1);
         new Simulation(processes, frames).run().printInfo(p1);
         //System.out.println();

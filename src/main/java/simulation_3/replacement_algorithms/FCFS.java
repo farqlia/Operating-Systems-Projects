@@ -1,6 +1,6 @@
 package simulation_3.replacement_algorithms;
 
-import simulation_3.Page;
+import simulation_3.process.Page;
 import simulation_3.Time;
 
 public class FCFS extends PagesManager {

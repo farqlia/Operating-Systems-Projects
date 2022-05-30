@@ -3,12 +3,9 @@ package simulation_3.generators;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.Well512a;
 import simulation_3.PrintStatistics;
-import simulation_3.Process_;
+import simulation_3.process.Process_;
 import simulation_3.Time;
-import simulation_3.replacement_algorithms.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Simulation {

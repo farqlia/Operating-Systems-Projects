@@ -1,4 +1,4 @@
-package simulation_3;
+package simulation_3.process;
 
 public class Page {
 

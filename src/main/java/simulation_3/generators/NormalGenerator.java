@@ -9,38 +9,39 @@ import java.util.stream.IntStream;
 
 public class NormalGenerator implements Generator{
 
-    private final RandomDataGenerator PAGE_GENERATOR = new RandomDataGenerator(new Well19937c(1));
-    private final RandomDataGenerator SET_SIZE_GENERATOR = new RandomDataGenerator(new Well512a(1));
-    private final RandomGenerator SET_CHOICE = new Well1024a(1);
-    private final RandomDataGenerator LOCALITY_INTERVAL_GENERATOR = new RandomDataGenerator(new Well512a(2));
+    private final RandomDataGenerator PAGE_GENERATOR;
+    private final RandomDataGenerator SET_SIZE_GENERATOR;
+    private final RandomGenerator SET_CHOICE;
+    private final RandomDataGenerator LOCALITY_INTERVAL_GENERATOR;
 
-    private final RandomGenerator RANDOMNESS_GENERATOR = new Well512a(5);
-    private final RandomGenerator PAGE_CHOICE_GENERATOR = new Well1024a(6);
-
+    private final RandomGenerator RANDOMNESS_GENERATOR;
+    private final RandomGenerator PAGE_CHOICE_GENERATOR;
+    private int numberOfSets;
 
     // 2-3 element sets
     private List<List<Integer>> sets = new ArrayList<>();
-    private int numberOfSets = 5;
-    // Min and max number of references
-    private int lowDeltaT = 10;
-    private int highDeltaT = 20;
 
-    // max difference between pages in one set
-    private int delta = 2;
-    private int pageNumbers;
+    private final int pageNumbers;
 
     private List<Integer> pages;
 
     private int size;
-
-    // How often randomness occur between intervals of local requests
-    private double randomInterrupt = 0.2;
-
-    private List<Integer> pageRequests = new ArrayList<>(size);
+    private final List<Integer> pageRequests = new ArrayList<>(size);
 
     public NormalGenerator(int size, int pageNumbers){
+        this(1, size, pageNumbers, 5);
+    }
+
+    public NormalGenerator(int randInt, int size, int pageNumbers, int numberOfSets){
         this.size = size;
         this.pageNumbers = pageNumbers;
+        this.numberOfSets = numberOfSets;
+        PAGE_GENERATOR = new RandomDataGenerator(new Well19937c(randInt));
+        SET_SIZE_GENERATOR = new RandomDataGenerator(new Well512a(randInt));
+        SET_CHOICE = new Well1024a(randInt);
+        LOCALITY_INTERVAL_GENERATOR = new RandomDataGenerator(new Well19937a(randInt));
+        RANDOMNESS_GENERATOR = new Well44497b(randInt);
+        PAGE_CHOICE_GENERATOR = new Well44497a(randInt);
         init();
     }
 
@@ -53,6 +54,8 @@ public class NormalGenerator implements Generator{
 
     private void createRequests(){
         while (pageRequests.size() < size){
+            // How often randomness occur between intervals of local requests
+            double randomInterrupt = 0.2;
             if (randomInterrupt > RANDOMNESS_GENERATOR.nextFloat()){
                 addPageRandomly();
             } else {
@@ -62,6 +65,9 @@ public class NormalGenerator implements Generator{
     }
 
     private void addPagesLocally(List<Integer> set){
+        // Min and max number of references
+        int lowDeltaT = 10;
+        int highDeltaT = 20;
         int intervalSize = LOCALITY_INTERVAL_GENERATOR.nextInt(lowDeltaT, highDeltaT);
         if (PrintStatistics.print) System.out.println("[LOCAL INTERVAL]: ");
         int page = set.get(PAGE_CHOICE_GENERATOR.nextInt(set.size()));
@@ -89,6 +95,8 @@ public class NormalGenerator implements Generator{
             setSize = SET_SIZE_GENERATOR.nextInt(2, 5);
             while (setSize-- > 0){
                 // We want to choose pages from its neighbours
+                // max difference between pages in one set
+                int delta = 2;
                 addFromRange(page_i - delta, page_i + delta, set);
             }
             sets.add(new ArrayList<>(set));

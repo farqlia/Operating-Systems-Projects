@@ -1,9 +1,11 @@
-package simulation_3;
+package simulation_3.process;
 
 import simulation_3.generators.Generator;
+import simulation_3.process.Page;
 import simulation_3.replacement_algorithms.PagesManager;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Process_ {
 
@@ -11,24 +13,21 @@ public class Process_ {
     ListIterator<Integer> pageIter;
     List<Page> pages;
     PagesManager replacementAlgorithm;
+    FrameManager frameManager;
 
-    boolean isActive;
-    // frames belonging to the process
-    List<Integer> frames;
-    int nextFreeFrame;
+    private State state;
 
-    private String name;
-    public static int numOfProcesses;
+    private final int id;
 
-    public Process_(Generator pageRequests,
+    public Process_(int id, Generator pageRequests,
                     PagesManager replacementAlgorithm){
         this.pageRequests = pageRequests;
         this.pageIter = pageRequests.iterator();
         this.replacementAlgorithm = replacementAlgorithm;
         this.replacementAlgorithm.setProcess(this);
-        this.isActive = true;
-        this.frames = new ArrayList<>();
-        this.name = "" + numOfProcesses++;
+        this.state = State.RUNNING;
+        this.frameManager = new FrameManager();
+        this.id = id;
         initPages();
     }
 
@@ -67,35 +66,37 @@ public class Process_ {
         return replacementAlgorithm;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public State getState() {
+        return state;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setState(State state) {
+        this.state = state;
     }
 
-    public List<Integer> getFrames() {
-        return frames;
-    }
-
-    public int getNextFreeFrame(){
-        return (nextFreeFrame >= frames.size()) ? -1 : frames.get(nextFreeFrame++);
-    }
-
-    public boolean hasFreeFrame(){
-        return nextFreeFrame < frames.size();
-    }
-
-    public void setFrames(List<Integer> frames) {
-        this.frames = frames;
+    public FrameManager getFrameManager() {
+        return frameManager;
     }
 
     public int numOfRequests(){return pageRequests.size();}
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString(){
-        return "p" + name;
+        return "p" + id;
+    }
+
+    public String printInfo(){
+        return this + ": " + "[State] = " + state.name() + ", " +
+                //"[Pages] = " + pages.stream().map(x -> "p: " + x.getNum() + ", f: " + x.getFrame()).collect(Collectors.toList()) + ", " +
+                "[NofF] = " + frameManager.numOfFrames() + ", " +
+                "[Frames] = " + frameManager.getFrames() +  ", " +
+                "[NoP] = " + pages.size() + ", " +
+                "[NofR] = " + pageRequests.size() + ", " +
+                "[Page Faults] = " + replacementAlgorithm.getMissCount() + "\n";
     }
 
 }
