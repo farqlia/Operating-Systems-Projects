@@ -66,8 +66,8 @@ public class NormalGenerator implements Generator{
 
     private void addPagesLocally(List<Integer> set){
         // Min and max number of references
-        int lowDeltaT = 10;
-        int highDeltaT = 20;
+        int lowDeltaT = 20;
+        int highDeltaT = 40;
         int intervalSize = LOCALITY_INTERVAL_GENERATOR.nextInt(lowDeltaT, highDeltaT);
         if (PrintStatistics.print) System.out.println("[LOCAL INTERVAL]: ");
         int page = set.get(PAGE_CHOICE_GENERATOR.nextInt(set.size()));
@@ -86,21 +86,24 @@ public class NormalGenerator implements Generator{
     }
 
     private void fillLocalSets(){
-        List<Integer> set = new ArrayList<>();
+        List<Integer> set = null;
         // Index of page
         int page_i;
         int setSize;
-        while (numberOfSets-- > 0){
+        int bound = 2;
+        int delta = 2;
+        while (numberOfSets-- > 0 && pages.size() > bound){
             page_i = PAGE_GENERATOR.nextInt(0, pages.size());
-            setSize = SET_SIZE_GENERATOR.nextInt(2, 5);
-            while (setSize-- > 0){
+            setSize = Math.min(pages.size() - bound, SET_SIZE_GENERATOR.nextInt(2, 5));
+            set = new ArrayList<>(setSize);
+
+            while (setSize-- > 0 && pages.size() > (bound + setSize)){
                 // We want to choose pages from its neighbours
                 // max difference between pages in one set
-                int delta = 2;
+
                 addFromRange(page_i - delta, page_i + delta, set);
             }
-            sets.add(new ArrayList<>(set));
-            set.clear();
+            if (!set.isEmpty()) sets.add(set);
         }
     }
 

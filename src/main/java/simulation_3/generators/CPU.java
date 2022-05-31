@@ -5,6 +5,7 @@ import simulation_3.PrintStatistics;
 import simulation_3.process.Process_;
 import simulation_3.Time;
 import simulation_3.process.State;
+import simultation_4.PrintConsole;
 import simultation_4.frames_allocators.FrameAllocator;
 import simultation_4.frames_allocators.NormalFrameAllocator;
 
@@ -28,32 +29,30 @@ public class CPU {
     }
 
     public void service(Process_ process){
-        Page page = process.nextPage();
-        //if (PrintStatistics.print) System.out.println("[REQUESTED PAGE]: " + page.getNum());
-        page.setReferenceTime(Time.get());
+        Page page = process.peekPage();
+        //if (PrintConsole.print) System.out.println("[REQUESTED PAGE]: " + page.getNum());
         frameAllocator.allocateFrame(process);
         // Frame allocator may decide to stop the process
         if (process.getState() == State.RUNNING){
+            page = process.nextPage();
+            page.setReferenceTime(Time.get());
             page.setReferenceBit(true);
             process.getPagesManager().allocatePage();
             memory[page.getFrame()] = page;
-            if (PrintStatistics.print) printMemory();
+            //if (PrintConsole.print) printMemory();
         }
-        //else {
-         //   activeProcesses.remove(process);
-        //}
     }
     private void printMemory(){
         System.out.println("--------- MEMORY --------------");
         System.out.println("[TIME]: " + Time.get());
         for (int i = 0; i < memory.length; i++){
             System.out.print(i + ": ");
-            if (memory[i] != null){
+            if (memory[i] != null && memory[i].isPresent()){
                 System.out.print(memory[i].getNum());
                 for (Process_ p : activeProcesses){
                     if (p.getFrameManager().getFrames().contains(i)) System.out.print(" " + p);
                 }
-                if (memory[i].getReferenceTime() == Time.get())
+                if (memory[i].getFrame() == i && memory[i].getReferenceTime() == Time.get())
                     System.out.print("             <----");
                 System.out.println();
             } else {

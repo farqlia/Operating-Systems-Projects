@@ -35,20 +35,19 @@ public class PageFaultFrequency extends FrameAllocator{
     @Override
     public void allocateFrame(Process_ process) {
 
-        double pFF = 0;
-        if (process.getPagesManager().getCount() > deltaT && process.getPagesManager().getCount() % deltaT == 0) {
-            if (PrintConsole.print) System.out.println("[COMPUTING PFF]: " + Time.get());
+        double pFF = 0; //&& process.getPagesManager().getCount() % deltaT == 0
+        if (process.getPagesManager().getCount() > deltaT) {
+            //if (PrintConsole.print) System.out.println("[COMPUTING PFF]: " + Time.get());
             if (process.getState() == State.RUNNING) {
                 pFF = ((double) (process.getPagesManager().getPastMissCount(0) -
                         process.getPagesManager().getPastMissCount(deltaT)) / deltaT);
                 if (PrintConsole.print) System.out.print(process + ": " + pFF + " ");
                 // Stop the process only when its PFF goes beyond another parameter
-                if (pFF > H) stopProcess(process);
+                if (pFF > H && freeFrames.isEmpty()) stopProcess(process);
                 else if (pFF > MAX) addFrame(process);
                 else if (pFF < MIN) removeFrame(process);
-                System.out.println();
             }
-            System.out.println("----------------------------------");
+
         }
     }
 
@@ -56,13 +55,13 @@ public class PageFaultFrequency extends FrameAllocator{
         if (!freeFrames.isEmpty()) {
             int frame = freeFrames.pollFirst();
             process.getFrameManager().addFrame(frame);
-            if (PrintConsole.print) System.out.print("+" + frame);
+            if (PrintConsole.print) System.out.println("+" + frame);
         }
     }
 
     private void removeFrame(Process_ process){
 
-        if (process.getFrameManager().numOfFrames() > 1){
+        if (process.getFrameManager().numOfFrames() > minimalFrameNumber){
             int frame = process.getFrameManager().removeFrame();
             if (PrintConsole.print) System.out.println("-" + frame);
             freeFrames.addLast(frame);
@@ -73,6 +72,10 @@ public class PageFaultFrequency extends FrameAllocator{
                     break;
                 }
         }
+    }
+
+    public void printResults(){
+        System.out.println("TOTAL BLOCKED: " + stoppedProcesses);
     }
 
     @Override

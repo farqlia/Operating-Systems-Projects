@@ -46,6 +46,8 @@ public class Process_ {
         return pages.get(pageIter.previous());
     }
 
+    public Page peekPage() {return pages.get(pageRequests.requests().get(pageIter.nextIndex()));}
+
     public boolean hasNext(){
         return pageIter.hasNext();
     }

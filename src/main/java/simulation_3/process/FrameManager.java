@@ -8,7 +8,9 @@ public class FrameManager {
     private final List<Integer> frames = new LinkedList<>();
     private int next = 0;
 
-    public void addFrame(int frame){frames.add(frame);}
+    public void addFrame(int frame){
+        frames.add(frame);
+    }
 
     public void removeFrame(int frame){
         frames.remove(frame);

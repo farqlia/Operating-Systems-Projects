@@ -9,29 +9,24 @@ import java.util.stream.Collectors;
 
 public class Proportional extends FrameAllocator {
 
-
-    public Proportional(List<Process_> activeProcesses, int numOfFrames) {
+    boolean initializeAll;
+    public Proportional(List<Process_> activeProcesses, int numOfFrames,
+                        boolean initializeAll) {
         super(activeProcesses, numOfFrames);
+        this.initializeAll = initializeAll;
+    }
+
+    public Proportional(List<Process_> activeProcesses, int numOfFrames){
+        this(activeProcesses, numOfFrames, true);
     }
 
     public void initialize(){
         distributeFrames();
+        if (initializeAll) distributeLeftovers();
     }
 
-    private void distributeFrames(){
-        int sum = activeProcesses.stream()
-                .filter(p -> p.getState() == State.RUNNING).mapToInt(p -> p.getPages().size()).reduce(Integer::sum).getAsInt();
+    private void distributeLeftovers(){
         int framesToAdd;
-        for (Process_ p : activeProcesses){
-            if (p.getState() == State.RUNNING){
-                framesToAdd = ((p.getPages().size() * numOfFrames) / sum) - p.getFrameManager().numOfFrames();
-                for (int f= 0; f < framesToAdd; f++){
-                    p.getFrameManager().addFrame(freeFrames.pollFirst());
-                }
-            }
-        }
-
-
         if (!freeFrames.isEmpty()){
 
             List<Process_> sorted = activeProcesses.stream().filter(p -> p.getState() == State.RUNNING).sorted(Comparator.comparingInt(p -> p.getPages().size())).collect(Collectors.toList());
@@ -42,12 +37,28 @@ public class Proportional extends FrameAllocator {
                 i = (i - 1 + sorted.size()) % sorted.size();
             }
         }
+    }
 
+    private void distributeFrames(){
+        int sum = activeProcesses.stream()
+                .filter(p -> p.getState() == State.RUNNING).mapToInt(p -> p.getPages().size()).reduce(Integer::sum).getAsInt();
+        int framesToAdd;
+        int framesToDistribute = freeFrames.size();
+        for (Process_ p : activeProcesses){
+            if (p.getState() == State.RUNNING){
+                framesToAdd = ((p.getPages().size() * framesToDistribute) / sum);
+                        //- p.getFrameManager().numOfFrames();
+                for (int f= 0; f < framesToAdd; f++){
+                    p.getFrameManager().addFrame(freeFrames.pollFirst());
+                }
+            }
+        }
     }
 
     @Override
     public void allocateFrame(Process_ process) {
         distributeFrames();
+        distributeLeftovers();
     }
 
     @Override
