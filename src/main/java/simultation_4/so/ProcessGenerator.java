@@ -23,7 +23,7 @@ public class ProcessGenerator {
 
     public Process_ next(){
         int pageNumber = 20 + PAGE_NUMBERS_GENERATOR.nextInt(20);
-        return new Process_(counter, new NormalGenerator(counter++, 500 + DURATION_GENERATOR.nextInt(1),
+        return new Process_(counter, new NormalGenerator(counter++, 1000 + DURATION_GENERATOR.nextInt(1000),
                 pageNumber, 2 + SET_SIZE_GENERATOR.nextInt(pageNumber / 5 - 2)),
                 new LRU());
     }

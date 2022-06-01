@@ -25,9 +25,14 @@ public class Equal extends FrameAllocator{
         }
         // Share all the left frames equally between processes
         // Maybe randomly add it?
-        for (int f = framesPerProcess * activeProcesses.size(), i=0; f < numOfFrames; f++, i++){
-            if (activeProcesses.get(i).getState() == State.RUNNING) activeProcesses.get(i).getFrameManager().addFrame(f);
+        int i = 0;
+        while (!freeFrames.isEmpty()){
+            if (activeProcesses.get(i).getState() == State.RUNNING)
+                activeProcesses.get(i % activeProcesses.size()).getFrameManager().addFrame(freeFrames.pollFirst());
+            i++;
         }
+
+
     }
 
     @Override

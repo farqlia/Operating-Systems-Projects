@@ -54,6 +54,7 @@ public abstract class FrameAllocator {
 
     }
 
+
     protected void stopProcess(Process_ process){
         // Stop the process
         process.setState(State.BLOCKED);

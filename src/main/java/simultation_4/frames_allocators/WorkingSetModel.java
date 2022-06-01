@@ -52,13 +52,13 @@ public class WorkingSetModel extends FrameAllocator {
         return toRemove;
     }
 
-    private void restartBlockedProcess(int[] frameDemands){
+    protected void restartBlockedProcess(int[] frameDemands){
         for (Process_ p : activeProcesses){
             if (p.getState() == State.BLOCKED
                     && frameDemands[p.getId()] > 0 && frameDemands[p.getId()] <= freeFrames.size()){
                 p.setState(State.RUNNING);
                 if (PrintConsole.print)
-                    System.out.println("[RESTARTED]: " + p);
+                    if (PrintConsole.print) System.out.println("[RESTARTED]: " + p);
                 while (p.getFrameManager().numOfFrames() < frameDemands[p.getId()])
                     p.getFrameManager().addFrame(freeFrames.pollFirst());
             }
@@ -70,7 +70,7 @@ public class WorkingSetModel extends FrameAllocator {
 
         if (Time.get() > frequency && Time.get() % frequency == 0){
 
-            System.out.println("[TIME] = " + Time.get());
+            if (PrintConsole.print) System.out.println("[TIME] = " + Time.get());
 
             int[] frameDemand = new int[activeProcesses.size()];
             int wSSSUm = computeWSS(frameDemand);
@@ -104,8 +104,11 @@ public class WorkingSetModel extends FrameAllocator {
             }
 
             if (freeFrames.size() > 0) restartBlockedProcess(frameDemand);
-            System.out.println("AFTER PARTITION");
-            printFrames();
+            if (PrintConsole.print) {
+                System.out.println("AFTER PARTITION");
+                printFrames();
+            }
+
 
         }
 
@@ -135,4 +138,8 @@ public class WorkingSetModel extends FrameAllocator {
         System.out.println("TOTAL BLOCKED: " + stoppedProcesses);
     }
 
+    @Override
+    public String toString() {
+        return "WorkingSetModel";
+    }
 }

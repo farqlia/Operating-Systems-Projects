@@ -47,7 +47,7 @@ public class PageFaultFrequency extends FrameAllocator{
                 else if (pFF > MAX) addFrame(process);
                 else if (pFF < MIN) removeFrame(process);
             }
-
+            ;
         }
     }
 

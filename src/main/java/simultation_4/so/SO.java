@@ -3,6 +3,7 @@ import simulation_3.Time;
 import simulation_3.generators.CPU;
 import simulation_3.process.Process_;
 import simulation_3.process.State;
+import simultation_4.PrintConsole;
 import simultation_4.Thrashing;
 import simultation_4.frames_allocators.FrameAllocator;
 
@@ -27,6 +28,8 @@ public class SO {
         this.thrashing = new Thrashing(processes, 10);
     }
 
+    public int[] getThrashing(){return thrashing.getData();};
+
     public void run(){
         Process_ process;
         Time.reset();
@@ -37,11 +40,11 @@ public class SO {
             cpu.service(process);
             thrashing.collectData(process);
             Time.inc();
-            if (wasRemoved) printFramesPerProcess();
+            if (wasRemoved && PrintConsole.print) printFramesPerProcess();
 
             if (!process.hasNext()) {
 
-                System.out.println("[TIME] = " + Time.get() + ", finished: " + process);
+                if (PrintConsole.print)  System.out.println("[TIME] = " + Time.get() + ", finished: " + process);
                 wasRemoved = true;
                 process.setState(State.TERMINATED);
                 //System.out.println(process.printInfo());
