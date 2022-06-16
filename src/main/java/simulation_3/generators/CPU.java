@@ -1,13 +1,11 @@
 package simulation_3.generators;
 
 import simulation_3.process.Page;
-import simulation_3.PrintStatistics;
 import simulation_3.process.Process_;
 import simulation_3.Time;
 import simulation_3.process.State;
-import simultation_4.PrintConsole;
-import simultation_4.frames_allocators.FrameAllocator;
-import simultation_4.frames_allocators.NormalFrameAllocator;
+import simulation_4.frames_allocators.FrameAllocator;
+import simulation_4.frames_allocators.NormalFrameAllocator;
 
 import java.util.List;
 

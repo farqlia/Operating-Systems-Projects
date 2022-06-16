@@ -1,11 +1,8 @@
-package simultation_4;
+package simulation_4;
 
-import oracle.jrockit.jfr.JFR;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.Dataset;
-import org.jfree.data.general.Series;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import simulation_3.process.Process_;

@@ -1,13 +1,12 @@
-package simultation_4.so;
+package simulation_4.so;
 import simulation_3.Time;
 import simulation_3.generators.CPU;
 import simulation_3.process.Process_;
 import simulation_3.process.State;
-import simultation_4.PrintConsole;
-import simultation_4.Thrashing;
-import simultation_4.frames_allocators.FrameAllocator;
+import simulation_4.PrintConsole;
+import simulation_4.Thrashing;
+import simulation_4.frames_allocators.FrameAllocator;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 

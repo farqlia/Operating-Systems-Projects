@@ -1,11 +1,10 @@
-package simultation_4;
+package simulation_4;
 
 import simulation_3.process.Process_;
-import simultation_4.frames_allocators.*;
-import simultation_4.so.ProcessGenerator;
-import simultation_4.so.SO;
+import simulation_4.frames_allocators.*;
+import simulation_4.so.ProcessGenerator;
+import simulation_4.so.SO;
 
-import javax.swing.*;
 import java.util.List;
 
 public class Simulation {
@@ -15,8 +14,11 @@ public class Simulation {
 
     public static void main(String[] args) {
 
-        ProcessGenerator processGenerator = new ProcessGenerator();
-        List<Process_> processes = processGenerator.createProcesses(N);
+        ProcessGenerator processGenerator;
+        List<Process_> processes;
+
+        processGenerator = new ProcessGenerator();
+        processes = processGenerator.createProcesses(N);
         execute(processes, new Equal(processes, frames), frames);
 
         processGenerator = new ProcessGenerator();
@@ -25,11 +27,14 @@ public class Simulation {
 
         processGenerator = new ProcessGenerator();
         processes = processGenerator.createProcesses(N);
-        execute(processes, new PageFaultFrequency(processes, frames, 0.5, 0.2, 0.7, 50), frames);
+        execute(processes, new PageFaultFrequency(processes, frames, 0.4, 0.1, 0.6, 50), frames);
+
 
         processGenerator = new ProcessGenerator();
         processes = processGenerator.createProcesses(N);
         execute(processes, new WorkingSetModel(processes, frames, 20), frames);
+
+
 
     }
 
@@ -37,8 +42,11 @@ public class Simulation {
         //ProcessGenerator processGenerator = new ProcessGenerator();
        // List<Process_> processes = processGenerator.createProcesses(N);
         SO so = new SO(processes, allocator, frames);
+        //so.printStatistics();
         so.run();
         printData(allocator.toString(), processes, so.getThrashing());
+        so.printStatistics();
+        System.out.println("------------------------------------");
     }
 
     public static void printData(String algName, List<Process_> processes, int[] thrashing){

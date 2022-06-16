@@ -1,4 +1,4 @@
-package simultation_4;
+package simulation_4;
 
 
 

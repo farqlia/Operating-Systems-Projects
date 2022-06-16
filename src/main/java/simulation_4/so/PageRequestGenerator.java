@@ -1,8 +1,7 @@
-package simultation_4.so;
+package simulation_4.so;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
-import simulation_3.process.Page;
 import simulation_3.process.Process_;
 import simulation_3.process.State;
 

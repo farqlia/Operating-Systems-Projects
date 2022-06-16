@@ -1,10 +1,9 @@
-package simultation_4.frames_allocators;
+package simulation_4.frames_allocators;
 
-import simulation_3.PrintStatistics;
 import simulation_3.process.Page;
 import simulation_3.process.Process_;
 import simulation_3.process.State;
-import simultation_4.PrintConsole;
+import simulation_4.PrintConsole;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

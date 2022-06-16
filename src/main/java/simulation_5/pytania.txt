@@ -1,0 +1,25 @@
+czy można mieć więcej niż jedną migrację na raz na jednym procesorze
+czy na procesorach zadania mogą pojawiać się równolegle
+czy w tym środowisku może być więcej niż jedna migracja na raz
+o co chodzi z tym rozkładem normalnym
+czy można przyjąć, że jedno zapytanie do innej maszyny zajmuje
+jedną jednostkę czasu: wtedy jeśli tak, to powyższe pytania
+liczenie średniej: jak to liczyć: osobno dla każdego procesora
+obciążenie to samo wyjdzie
+liczenie wszystkich średnich z próbkowanej
+zrboić próbkowanie po czasie, co jakiś czas, ze wszystkich procesorach jakoś to wizualizować
+można do excela, albo na konsoli wyświetlić jak te wartości wyglądały
+czas na mniejsze odcinki niż maksymalna długość procesów, żeby nie pominąć pewnych wartości
+próbkowanie mniejsze niż max z czasów procesów
+liczyć obciążenie każdego procesu w danych chwilach
+na osi Y to średnia z obciążenia wszystkich procesach po czasie
+i potem histogramem, ale
+kluczowe jest zrobienie próbkowania w czasie, co jakiś moment odświeżyć
+średnie obciążenie nie wyjdzie różne, max 2% różnicy: odchylenie może wyjść różne (3,5%, w drugiej 7%)
+Jedna ze strategi rozrzuca nierówno, bo to chodzi o odchylenie od średniej
+liczba zapytań i migracja: tutaj rozrzut można zauważyć
+odchylenie po procesorach po czasie, w konkretnych momentach
+odchylenie jako niepewność na wykresie obciążenia!! tak jak na fizyce
+w tej trzeciej to można pytać i przyjmować aż do skutku
+mogą zachodzić więcej niż jedna migracja i to nawet z jednego procesora
+i w trakcie migracji danego procesu mogą się wykonywać zadania na innych procesorach

@@ -1,10 +1,9 @@
-package simultation_4.so;
+package simulation_4.so;
 
 import org.apache.commons.math3.random.ISAACRandom;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.Well512a;
-import simulation_3.Time;
 import simulation_3.generators.NormalGenerator;
 import simulation_3.process.Process_;
 import simulation_3.replacement_algorithms.LRU;
@@ -22,7 +21,7 @@ public class ProcessGenerator {
     private int counter = 0;
 
     public Process_ next(){
-        int pageNumber = 20 + PAGE_NUMBERS_GENERATOR.nextInt(20);
+        int pageNumber = 15 + PAGE_NUMBERS_GENERATOR.nextInt(10);
         return new Process_(counter, new NormalGenerator(counter++, 1000 + DURATION_GENERATOR.nextInt(1000),
                 pageNumber, 2 + SET_SIZE_GENERATOR.nextInt(pageNumber / 5 - 2)),
                 new LRU());

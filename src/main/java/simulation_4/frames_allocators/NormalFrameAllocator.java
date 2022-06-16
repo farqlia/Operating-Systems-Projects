@@ -1,4 +1,4 @@
-package simultation_4.frames_allocators;
+package simulation_4.frames_allocators;
 
 import simulation_3.process.Process_;
 import java.util.List;
