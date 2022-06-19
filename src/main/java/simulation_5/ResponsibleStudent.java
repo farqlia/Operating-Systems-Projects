@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 public class ResponsibleStudent extends MigrationHandler{
 
     public ResponsibleStudent(int maxLoadFactor, int probes) {
-        super(maxLoadFactor, (m -> m.currProbes < probes && m.processor.currentLoad() > maxLoadFactor));
+        super(maxLoadFactor, (p -> p.currentLoad() > maxLoadFactor),
+                (m -> m.currProbes < probes && m.processor.currentLoad() > maxLoadFactor));
     }
 }

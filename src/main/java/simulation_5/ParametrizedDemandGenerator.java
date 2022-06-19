@@ -11,14 +11,14 @@ import java.util.stream.IntStream;
 
 public class ParametrizedDemandGenerator implements Iterable<Integer> {
 
-    Demand[] demands;
-    RandomGenerator phaseDurationGenerator = new Well44497a(1);
-    RandomGenerator nextDemandGenerator = new Well44497a(2);
-    RandomGenerator demandValueGenerator = new Well44497a(3);
+    private final Demand[] demands;
+    private final RandomGenerator phaseDurationGenerator = new Well44497a(1);
+    private final RandomGenerator nextDemandGenerator = new Well44497a(2);
+    private final RandomGenerator demandValueGenerator = new Well44497a(3);
 
-    int numOfProcesses;
+    private final int numOfProcesses;
 
-     final double phaseDurationThreshold = 0.5;
+    private final double phaseDurationThreshold = 0.5;
 
     public ParametrizedDemandGenerator(Demand[] demands, int numOfProcesses){
         this.demands = demands;

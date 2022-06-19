@@ -1,6 +1,5 @@
 package simulation_5;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +13,10 @@ public class Processor {
     public Processor(int id) {
         this.id = id;
         this.processes = new LinkedList<>();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int numOfProcesses(){return processes.size();}
@@ -45,6 +48,7 @@ public class Processor {
         }
     }
 
+    // Add some logic for migrating tasks?
     public Process giveAwayProcess(){
         return processes.remove(processes.size() - 1);
     }

@@ -1,11 +1,12 @@
 package simulation_5;
 
+import java.lang.invoke.VolatileCallSite;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class Simulation {
+public class Simulation{
 
     private List<Processor> processors;
     private ProcessGenerator generator;
@@ -21,17 +22,42 @@ public class Simulation {
 
     public void run(){
         List<Process> processes = generator.createProcesses();
-
         while (!processes.isEmpty() || !isDone()){
             handleNextProcesses(processes);
             // First handle all migrations, then run jobs on all processors in parallel
             migrationStrategy.runMigrations();
             executeParallel();
             Time.incr();
-            if (Time.getTime() % 10 == 0 && PrintStatistics.print) printInfo();
+            if (Time.getTime() % 10 == 0) {
+                if (PrintStatistics.print) printInfo();
+                printProcessorsOverload();
+            }
+        }
+    }
+
+    public class Runner implements Iterator<Void>{
+
+        List<Process> processes;
+
+        public Runner(){
+            processes = generator.createProcesses();
+        }
+
+        public boolean hasNext(){
+            return !processes.isEmpty() || !isDone();
+        }
+
+        @Override
+        public Void next() {
+            handleNextProcesses(processes);
+            // First handle all migrations, then run jobs on all processors in parallel
+            migrationStrategy.runMigrations();
+            executeParallel();
+            return Void.TYPE.cast(null);
         }
 
     }
+
 
     private void handleNextProcesses(List<Process> processes){
         Iterator<Process> iter = processes.iterator();
@@ -40,9 +66,9 @@ public class Simulation {
         boolean loop = true;
         while (loop && iter.hasNext()){
             nextProcess = iter.next();
-            if (Time.getTime() >= nextProcess.getArrivalTime() &&
-                    migrationStrategy.startMigration(processors.get(nextProcess.getProcessorNumber()),
-                            nextProcess)) {
+            if (Time.getTime() >= nextProcess.getArrivalTime()){
+                migrationStrategy.startMigration(processors.get(nextProcess.getProcessorNumber()),
+                        nextProcess);
                 iter.remove();
             } else if (Time.getTime() < nextProcess.getArrivalTime()) loop = false;
         }
@@ -77,5 +103,7 @@ public class Simulation {
         while (nOfProcessors-- > 0) processors.add(new Processor(i++));
         this.migrationStrategy.setProcessorList(processors);
     }
+
+    public List<Processor> getProcessors(){return processors;}
 
 }

@@ -1,8 +1,6 @@
 package simulation_5;
 
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 public class HelpfulStudent extends MigrationStrategy{
@@ -18,22 +16,21 @@ public class HelpfulStudent extends MigrationStrategy{
     }
 
     @Override
-    public boolean startMigration(Processor processor, Process process) {
+    public void startMigration(Processor processor, Process process) {
         shouldPerformMigrations = true;
-        return true;
     }
 
     private int findOverloadedProcessor(int askingProcessor){
-        int processor = -1;
+        int processor;
         Set<Integer> askedProcessors = new HashSet<>(processorList.size());
         do {
             processor = randomProcessor(askingProcessor);
             askedProcessors.add(processor);
             incrementCommunications();
             if (PrintStatistics.print) System.out.println("[COMMUNICATION]: " + askedProcessors + " <-> " + processor);
-
         } while (askedProcessors.size() != processorList.size() &&
                 processorList.get(processor).currentLoad() < loadFactor);
+        if (askedProcessors.size() == processorList.size()) processor = -1;
         return processor;
     }
 
@@ -48,7 +45,8 @@ public class HelpfulStudent extends MigrationStrategy{
                     if (overloadedProcessor != -1) {
                         processor.addProcess(processorList.get(overloadedProcessor).giveAwayProcess());
                         incrementMigrations();
-                        if (PrintStatistics.print) System.out.println("[MIGRATED SUCCESSFULLY]: " + overloadedProcessor + " -> " + processor.id);
+                        if (PrintStatistics.print) System.out.println("[MIGRATED SUCCESSFULLY]: "
+                                + overloadedProcessor + " -> " + processor.id);
                     }
                 }
             }

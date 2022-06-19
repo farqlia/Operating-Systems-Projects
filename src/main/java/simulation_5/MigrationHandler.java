@@ -10,19 +10,26 @@ public class MigrationHandler extends MigrationStrategy {
     private List<Migration> currMigrations;
 
     private final Predicate<Migration> continueMigrationPredicate;
+    private final Predicate<Processor> startMigrationPredicate;
 
-    public MigrationHandler(int maxLoadFactor, Predicate<Migration> continueMigrationPredicate) {
+    public MigrationHandler(int maxLoadFactor, Predicate<Processor> startMigrationPredicate,
+                            Predicate<Migration> continueMigrationPredicate) {
         super(maxLoadFactor);
         this.currMigrations = new LinkedList<>();
+        this.startMigrationPredicate = startMigrationPredicate;
         this.continueMigrationPredicate = continueMigrationPredicate;
     }
 
     @Override
-    public boolean startMigration(Processor processor, Process process) {
-        currMigrations.add(new Migration(processor, process));
-        if (PrintStatistics.print) System.out.println("[STARTED MIGRATION]" + currMigrations.get(currMigrations.size() - 1));
-        processor.setMigrating(true);
-        return true;
+    public void startMigration(Processor processor, Process process) {
+        if (startMigrationPredicate.test(processor)){
+            currMigrations.add(new Migration(processor, process));
+            if (PrintStatistics.print) System.out.println("[STARTED MIGRATION]"
+                    + currMigrations.get(currMigrations.size() - 1));
+            processor.setMigrating(true);
+        } else {
+            processor.addProcess(process);
+        }
     }
 
     public void runMigrations(){
@@ -35,6 +42,7 @@ public class MigrationHandler extends MigrationStrategy {
             migration = iter.next();
             if (continueMigrationPredicate.test(migration)) {
                 destinyProcessor = randomProcessor(migration.processor.id);
+                incrementCommunications();
                 if (PrintStatistics.print) System.out.println("[COMMUNICATION]: " + migration.processor.id + " <-> " + destinyProcessor + ", total communications: " + migration.currProbes);
                 if (processorList.get((destinyProcessor)).currentLoad() < loadFactor) {
                     // Migrate to a processor that has feasible overload
@@ -44,7 +52,6 @@ public class MigrationHandler extends MigrationStrategy {
                     if (PrintStatistics.print) System.out.println("[MIGRATED SUCCESSFULLY]: " + migration.processor.id + " -> " + destinyProcessor);
                 } else {
                     migration.currProbes++;
-                    incrementCommunications();
                 }
             } else {
                 processorList.get(migration.processor.id).addProcess(migration.process);

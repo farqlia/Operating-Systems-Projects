@@ -32,7 +32,6 @@ public class GaussProcessorDist implements Iterable<Integer>{
         }
     }
 
-
     @Override
     public Iterator<Integer> iterator() {
         return new InnerIterator();

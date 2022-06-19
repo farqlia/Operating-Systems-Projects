@@ -36,7 +36,7 @@ public abstract class MigrationStrategy {
     }
 
     // Returns false until a migration is done
-    public abstract boolean startMigration(Processor processor, Process process);
+    public abstract void startMigration(Processor processor, Process process);
 
     public abstract void runMigrations();
 

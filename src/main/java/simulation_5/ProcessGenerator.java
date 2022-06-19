@@ -11,7 +11,8 @@ public class ProcessGenerator {
 
     int numOfProcesses;
     int timeSpan = 10;
-    RandomDataGenerator arrivalTimeGenerator = new RandomDataGenerator(new MersenneTwister(333));
+    RandomDataGenerator arrivalTimeGenerator
+            = new RandomDataGenerator(new MersenneTwister(333));
 
     Iterator<Integer> processors;
     Iterator<Integer> demands;
