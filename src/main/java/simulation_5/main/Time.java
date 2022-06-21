@@ -1,4 +1,4 @@
-package simulation_5;
+package simulation_5.main;
 
 public class Time {
 
@@ -7,5 +7,7 @@ public class Time {
     public static int getTime(){return time;}
 
     public static void incr(){time++;}
+
+    public static void reset(){time = 0;}
 
 }

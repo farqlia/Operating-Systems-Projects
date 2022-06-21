@@ -1,7 +1,8 @@
-package simulation_5;
+package simulation_5.generators;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
+import simulation_5.objects.Process;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,23 +11,28 @@ import java.util.List;
 public class ProcessGenerator {
 
     int numOfProcesses;
-    int timeSpan = 10;
+    int timeSpan = 3;
     RandomDataGenerator arrivalTimeGenerator
             = new RandomDataGenerator(new MersenneTwister(333));
 
-    Iterator<Integer> processors;
-    Iterator<Integer> demands;
-    Iterator<Integer> duration;
+    Iterable<Integer> processorsGenerator;
+    Iterable<Integer> demandsGenerator;
+    Iterable<Integer> durationGenerator;
 
-    public ProcessGenerator(int numOfProcesses, Iterator<Integer> processors, Iterator<Integer> demands, Iterator<Integer> duration) {
+    public ProcessGenerator(int numOfProcesses, Iterable<Integer> processorsGenerator,
+                            Iterable<Integer> demandsGenerator, Iterable<Integer> durationGenerator) {
         this.numOfProcesses = numOfProcesses;
-        this.processors = processors;
-        this.demands = demands;
-        this.duration = duration;
+        this.processorsGenerator = processorsGenerator;
+        this.demandsGenerator = demandsGenerator;
+        this.durationGenerator = durationGenerator;
     }
 
     public List<Process> createProcesses(){
         List<Process> processes = new LinkedList<>();
+
+        Iterator<Integer> demands = demandsGenerator.iterator();
+        Iterator<Integer> processors = processorsGenerator.iterator();
+        Iterator<Integer> duration = durationGenerator.iterator();
 
         int arrivalTime = 0;
         while (numOfProcesses-- > 0){

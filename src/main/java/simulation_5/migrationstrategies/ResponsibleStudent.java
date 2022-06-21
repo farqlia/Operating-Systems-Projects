@@ -1,8 +1,6 @@
-package simulation_5;
+package simulation_5.migrationstrategies;
 
-import java.util.function.Predicate;
-
-public class ResponsibleStudent extends MigrationHandler{
+public class ResponsibleStudent extends MigrationHandler {
 
     public ResponsibleStudent(int maxLoadFactor, int probes) {
         super(maxLoadFactor, (p -> p.currentLoad() > maxLoadFactor),

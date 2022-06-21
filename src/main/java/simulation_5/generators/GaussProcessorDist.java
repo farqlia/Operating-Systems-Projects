@@ -1,24 +1,31 @@
-package simulation_5;
+package simulation_5.generators;
 
 import org.apache.commons.math3.random.GaussianRandomGenerator;
 import org.apache.commons.math3.random.MersenneTwister;
+import org.apache.commons.math3.random.RandomDataGenerator;
 
 import java.util.Iterator;
 
 public class GaussProcessorDist implements Iterable<Integer>{
 
-    GaussianRandomGenerator gRG = new GaussianRandomGenerator(new MersenneTwister(1));
     int mean;
     double sigma;
     int upper;
+    int numOfProcessors;
 
-    public GaussProcessorDist(double sigmaSquare, int mean, int upper){
-        this.mean = mean;
-        this.sigma = Math.sqrt(sigmaSquare);
-        this.upper = upper;
+    public GaussProcessorDist(int numOfProcessors){
+        this.numOfProcessors = numOfProcessors;
     }
 
     private class InnerIterator implements Iterator<Integer>{
+
+        RandomDataGenerator gRG
+                = new RandomDataGenerator(new MersenneTwister(1));
+        int multiplier;
+
+        public InnerIterator(){
+            this.multiplier = numOfProcessors / 2;
+        }
 
         @Override
         public boolean hasNext() {
@@ -27,8 +34,8 @@ public class GaussProcessorDist implements Iterable<Integer>{
 
         @Override
         public Integer next() {
-            return Math.min(upper, Math.max(0, (int) (gRG.nextNormalizedDouble()
-                    * sigma + mean)));
+            return Math.min(numOfProcessors - 1,
+                    Math.abs((int) (gRG.nextGaussian(0, 1) * multiplier)));
         }
     }
 

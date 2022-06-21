@@ -1,4 +1,8 @@
-package simulation_5;
+package simulation_5.migrationstrategies;
+
+import simulation_5.main.PrintStatistics;
+import simulation_5.objects.Process;
+import simulation_5.objects.Processor;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,7 +30,6 @@ public class MigrationHandler extends MigrationStrategy {
             currMigrations.add(new Migration(processor, process));
             if (PrintStatistics.print) System.out.println("[STARTED MIGRATION]"
                     + currMigrations.get(currMigrations.size() - 1));
-            processor.setMigrating(true);
         } else {
             processor.addProcess(process);
         }
@@ -42,16 +45,18 @@ public class MigrationHandler extends MigrationStrategy {
             migration = iter.next();
             if (continueMigrationPredicate.test(migration)) {
                 destinyProcessor = randomProcessor(migration.processor.id);
-                incrementCommunications();
-                if (PrintStatistics.print) System.out.println("[COMMUNICATION]: " + migration.processor.id + " <-> " + destinyProcessor + ", total communications: " + migration.currProbes);
-                if (processorList.get((destinyProcessor)).currentLoad() < loadFactor) {
+                migration.processor.incrCommunications();
+                if (PrintStatistics.print) System.out.println("[COMMUNICATION]: " + migration.processor.id + " <-> " + destinyProcessor + ", total probes: " + migration.currProbes);
+                if (processorList.get((destinyProcessor)).currentLoad() < maxLoadFactor) {
                     // Migrate to a processor that has feasible overload
                     processorList.get(destinyProcessor).addProcess(migration.process);
+                    processorList.get(destinyProcessor).incrInComingMigrations();
                     iter.remove();
+
                     incrementMigrations();
                     if (PrintStatistics.print) System.out.println("[MIGRATED SUCCESSFULLY]: " + migration.processor.id + " -> " + destinyProcessor);
                 } else {
-                    migration.currProbes++;
+                    migration.incrProbes();
                 }
             } else {
                 processorList.get(migration.processor.id).addProcess(migration.process);

@@ -1,7 +1,7 @@
 package simulation_5.visualization;
 
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-import simulation_5.Processor;
+import simulation_5.objects.Processor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,12 +23,16 @@ public class Computation {
 
     public void calculate(int timeDelta, double[] averages, double[] deviation){
 
-        StandardDeviation sD = new StandardDeviation();
-        for (int i = 0; i < averages.length; i++){
+        double sum = 0;
+        int i = 0;
+        for (; i < averages.length - 1; i++){
             averages[i] =  Arrays.stream(currentWorkloads[i]).sum() / timeDelta;
+            sum += averages[i];
         }
-        for (int i = 0; i < deviation.length; i++){
-            deviation[i] = sD.evaluate(currentWorkloads[i]);
+        double glbAvg = (sum / (averages.length - 1));
+        averages[i] = glbAvg;
+        for (i = 0; i < deviation.length; i++){
+            deviation[i] = Math.abs(glbAvg - averages[i]);
         }
     }
 

@@ -1,4 +1,4 @@
-package simulation_5;
+package simulation_5.objects;
 
 public class Process {
 

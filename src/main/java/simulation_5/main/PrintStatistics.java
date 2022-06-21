@@ -1,4 +1,4 @@
-package simulation_5;
+package simulation_5.main;
 
 public class PrintStatistics {
 

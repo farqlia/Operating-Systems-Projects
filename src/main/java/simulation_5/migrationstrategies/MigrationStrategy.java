@@ -1,7 +1,9 @@
-package simulation_5;
+package simulation_5.migrationstrategies;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
+import simulation_5.objects.Process;
+import simulation_5.objects.Processor;
 
 import java.util.List;
 
@@ -10,13 +12,13 @@ public abstract class MigrationStrategy {
     private final RandomDataGenerator rDG = new RandomDataGenerator(new MersenneTwister(69));
 
     protected List<Processor> processorList;
-    protected int loadFactor;
+    protected int maxLoadFactor;
 
     private int communicationCount = 0;
     private int migrationsCount = 0;
 
-    public MigrationStrategy(int loadFactor) {
-        this.loadFactor = loadFactor;
+    public MigrationStrategy(int maxLoadFactor) {
+        this.maxLoadFactor = maxLoadFactor;
     }
 
     public void setProcessorList(List<Processor> processorList) {

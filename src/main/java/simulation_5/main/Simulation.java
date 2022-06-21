@@ -1,6 +1,10 @@
-package simulation_5;
+package simulation_5.main;
 
-import java.lang.invoke.VolatileCallSite;
+import simulation_5.generators.ProcessGenerator;
+import simulation_5.migrationstrategies.MigrationStrategy;
+import simulation_5.objects.Process;
+import simulation_5.objects.Processor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -18,6 +22,10 @@ public class Simulation{
         this.migrationStrategy = migrationStrategy;
         this.processors = new ArrayList<>();
         init(nOfProcessors);
+    }
+
+    public MigrationStrategy getMigrationStrategy() {
+        return migrationStrategy;
     }
 
     public void run(){
@@ -69,6 +77,7 @@ public class Simulation{
             if (Time.getTime() >= nextProcess.getArrivalTime()){
                 migrationStrategy.startMigration(processors.get(nextProcess.getProcessorNumber()),
                         nextProcess);
+
                 iter.remove();
             } else if (Time.getTime() < nextProcess.getArrivalTime()) loop = false;
         }
@@ -76,7 +85,8 @@ public class Simulation{
 
     public void printProcessorsOverload(){
         System.out.print("[TIME: " + Time.getTime() + "], ");
-        System.out.println("Processors Overloads: " + Arrays.toString(processors.stream().mapToInt(Processor::currentLoad).toArray()));
+        System.out.println("Processors Overloads: " +
+                Arrays.toString(processors.stream().mapToInt(Processor::currentLoad).toArray()));
 
     }
 
